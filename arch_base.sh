@@ -5,27 +5,13 @@ function configure_pacman {
     sed -i 's/#Color/Color/; s/#VerbosePkgLists/VerbosePkgLists/; s/#ParallelDownloads = 5/ParallelDownloads = 5/; s/#MiscOptions/ILoveCandy\n&/' /etc/pacman.conf
 }
 
-# Função para listar opções de teclado
-function list_keyboard_options {
-    echo "Opções de layout de teclado disponíveis:"
-    localectl list-keymaps
-}
-
-# Função para listar opções de idioma
-function list_language_options {
-    echo "Opções de idioma disponíveis:"
-    localectl list-locales
-}
-
 # Ajustar teclado e idioma
 echo "Configuração de teclado e idioma:"
 
-list_keyboard_options
-read -p "Digite o layout de teclado desejado: " KEYMAP
+read -p "Digite o layout de teclado (ex: br-abnt2, us): " KEYMAP
 loadkeys $KEYMAP
 
-list_language_options
-read -p "Digite o idioma desejado: " LOCALE
+read -p "Digite o idioma (ex: pt_BR.UTF-8, en_US.UTF-8): " LOCALE
 echo "$LOCALE UTF-8" > /etc/locale.gen
 locale-gen
 export LANG=$LOCALE
@@ -78,3 +64,16 @@ pacstrap /mnt base linux linux-firmware base-devel networkmanager network-manage
 echo "Configurando o sistema..."
 genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
+
+# Drivers de vídeo
+source src/cmd.sh
+
+nvidia_drivers
+
+# Sair do chroot e finalizar
+echo "Saindo do chroot e finalizando..."
+umount -R /mnt
+echo "Instalação básica concluída. Reinicie o sistema."
+echo "Pressione Enter para reiniciar..."
+read -p ""
+reboot

@@ -114,9 +114,9 @@ echo "Escolha o tipo de boot (BIOS ou UEFI):"
 read BOOT_TYPE
 if [ "$BOOT_TYPE" == "BIOS" ]; then
     pacman -S --noconfirm grub
-    grub-install --target=i386-pc $DISK
+    grub-install --target=i386-pc /dev/$DISK
 else
-    pacman -S --noconfirm grub efibootmgr
+    pacman -S --noconfirm grub efibootmgr os-prober ntfs-3g
     grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 fi
 
@@ -125,8 +125,6 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 # Habilitar serviços
 systemctl enable NetworkManager
-
-EOF
 
 # Sair do chroot e finalizar
 echo "Saindo do chroot e finalizando..."

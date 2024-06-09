@@ -2,32 +2,39 @@
 
 # Função para configurar o Pacman
 function configure_pacman {
-    sed -i 's/#Color/Color/' /etc/pacman.conf
-    sed -i 's/#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
-    sed -i 's/#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
-    sed -i 's/#MiscOptions/ILoveCandy\n&/' /etc/pacman.conf
+    sed -i 's/#Color/Color/; s/#VerbosePkgLists/VerbosePkgLists/; s/#ParallelDownloads = 5/ParallelDownloads = 5/; s/#MiscOptions/ILoveCandy\n&/' /etc/pacman.conf
+}
+
+# Função para listar opções de teclado
+function list_keyboard_options {
+    echo "Opções de layout de teclado disponíveis:"
+    localectl list-keymaps
+}
+
+# Função para listar opções de idioma
+function list_language_options {
+    echo "Opções de idioma disponíveis:"
+    localectl list-locales
 }
 
 # Ajustar teclado e idioma
-echo "Escolha o layout de teclado (ex: br-abnt2, us, etc.):"
-read KEYMAP
+echo "Configuração de teclado e idioma:"
+
+list_keyboard_options
+read -p "Digite o layout de teclado desejado: " KEYMAP
 loadkeys $KEYMAP
 
-echo "Escolha o idioma (ex: pt_BR.UTF-8, en_US.UTF-8, etc.):"
-read LOCALE
+list_language_options
+read -p "Digite o idioma desejado: " LOCALE
 echo "$LOCALE UTF-8" > /etc/locale.gen
 locale-gen
 export LANG=$LOCALE
 
-# Conectar à internet
-iwctl
-echo "Pressione Enter após conectar à rede com iwctl..."
-read -p ""
-
 # Atualizar o sistema de pacotes
+echo "Atualizando sistema de pacotes..."
 pacman-key --init
 pacman-key --populate
-pacman -Syy
+pacman -Sy
 
 configure_pacman
 
@@ -35,101 +42,39 @@ configure_pacman
 timedatectl set-ntp true
 
 # Escolher disco
-lsblk
-echo "Escolha o disco para instalação (ex: /dev/sda):"
-read DISK
+echo "Escolha o disco para instalação:"
+lsblk -o NAME,SIZE,TYPE,FSTYPE | grep disk
+read -p "Digite o disco para instalação (ex: /dev/sda): " DISK
 
-# Particionamento do disco
-echo "Abrindo cfdisk para particionamento do disco $DISK..."
+# Particionar o disco
+echo "Particionamento do disco $DISK..."
 cfdisk $DISK
 
 # Formatar as partições
-lsblk
-echo "Escolha a partição de boot:"
-read PARTITION_BOOT
-echo "Escolha a partição swap (opcional, deixe em branco se não tiver):"
-read PARTITION_SWAP
-echo "Escolha a partição raiz:"
-read PARTITION_ROOT
-echo "Escolha a partição home (opcional, deixe em branco se não tiver):"
-read PARTITION_HOME
-
 echo "Formatando as partições..."
+lsblk -o NAME,SIZE,TYPE,FSTYPE | grep -e "^$DISK" | grep -v -e "disk"
+read -p "Digite a partição de boot: " PARTITION_BOOT
+read -p "Digite a partição swap (opcional, deixe em branco se não tiver): " PARTITION_SWAP
+read -p "Digite a partição raiz: " PARTITION_ROOT
+read -p "Digite a partição home (opcional, deixe em branco se não tiver): " PARTITION_HOME
+
 mkfs.fat -F32 /dev/$PARTITION_BOOT
-if [ -n "$PARTITION_SWAP" ]; then
-    mkswap /dev/$PARTITION_SWAP
-    swapon /dev/$PARTITION_SWAP
-fi
+[ -n "$PARTITION_SWAP" ] && { mkswap /dev/$PARTITION_SWAP; swapon /dev/$PARTITION_SWAP; }
 mkfs.ext4 /dev/$PARTITION_ROOT
-if [ -n "$PARTITION_HOME" ]; then
-    mkfs.ext4 /dev/$PARTITION_HOME
-fi
+[ -n "$PARTITION_HOME" ] && mkfs.ext4 /dev/$PARTITION_HOME
 
 # Montar os sistemas de arquivos
 echo "Montando os sistemas de arquivos..."
 mount /dev/$PARTITION_ROOT /mnt
 mkdir /mnt/boot
 mount /dev/$PARTITION_BOOT /mnt/boot
-if [ -n "$PARTITION_HOME" ]; then
-    mkdir /mnt/home
-    mount /dev/$PARTITION_HOME /mnt/home
-fi
+[ -n "$PARTITION_HOME" ] && { mkdir /mnt/home; mount /dev/$PARTITION_HOME /mnt/home; }
 
 # Instalar os pacotes essenciais
 echo "Instalando os pacotes essenciais..."
-pacstrap /mnt base linux linux-firmware base-devel networkmanager network-manager-applet
+pacstrap /mnt base linux linux-firmware base-devel networkmanager network-manager-applet git
 
 # Configurar o sistema
 echo "Configurando o sistema..."
 genfstab -U /mnt >> /mnt/etc/fstab
-arch-chroot /mnt /bin/bash <<EOF
-
-# Fuso horário e localização
-echo "Escolha o fuso horário (ex: America/Sao_Paulo, Europe/London, etc.):"
-read TIMEZONE
-ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
-hwclock --systohc
-sed -i 's/#$LOCALE/$LOCALE/' /etc/locale.gen
-locale-gen
-echo "LANG=$LOCALE" > /etc/locale.conf
-echo "KEYMAP=$KEYMAP" > /etc/vconsole.conf
-
-# Configuração de rede
-echo "Digite o hostname:"
-read HOSTNAME
-echo "$HOSTNAME" > /etc/hostname
-cat <<EOT > /etc/hosts
-127.0.0.1        localhost
-::1              localhost
-127.0.1.1        $HOSTNAME.localdomain        $HOSTNAME
-EOT
-
-# Initramfs e senha do root
-mkinitcpio -P
-echo "Digite a senha do root:"
-passwd
-
-# Instalar e configurar o GRUB
-echo "Escolha o tipo de boot (BIOS ou UEFI):"
-read BOOT_TYPE
-if [ "$BOOT_TYPE" == "BIOS" ]; then
-    pacman -S --noconfirm grub
-    grub-install --target=i386-pc /dev/$DISK
-else
-    pacman -S --noconfirm grub efibootmgr os-prober ntfs-3g
-    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-fi
-
-sed -i 's/#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
-grub-mkconfig -o /boot/grub/grub.cfg
-
-# Habilitar serviços
-systemctl enable NetworkManager
-
-# Sair do chroot e finalizar
-echo "Saindo do chroot e finalizando..."
-umount -R /mnt
-echo "Instalação básica concluída. Reinicie o sistema."
-echo "Pressione Enter para reiniciar..."
-read -p ""
-reboot
+arch-chroot /mnt

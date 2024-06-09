@@ -14,9 +14,11 @@ function nvidia_config() {
         lib32-opencl-nvidia
         libvdpau-va-gl
         libvdpau
-        libva-nvidia-driver
+        libva-nvidia-driver 
     "
     install_lst "${inlst}"
+    exec_log "echo -e 'options nvidia_drm modeset=1 nvidia_drm fbdev=1 ' | sudo tee -a /etc/modprobe.d/nvidia.conf" "$(eval_gettext "Setting nvidia-drm modeset=1 nvidia_drm fbdev=1  option")"
+    exec_log "sudo sed -i '/^MODULES=(/ s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf" "$(eval_gettext "Setting early loading")"
     exec_log "sudo systemctl enable nvidia-suspend.service nvidia-hibernate.service nvidia-resume.service" "$(eval_gettext "Enabling nvidia services")"
 }
 
@@ -69,11 +71,5 @@ fi
 # Habilitar serviços
 systemctl enable NetworkManager
 
-# Sair do chroot e finalizar
-echo "Saindo do chroot e finalizando..."
-umount -R /mnt
-echo "Instalação básica concluída. Reinicie o sistema."
-echo "Pressione Enter para reiniciar..."
-read -p ""
-reboot
-
+# Parar a instalação aqui
+echo "Instalação básica concluída. A instalação foi parada."

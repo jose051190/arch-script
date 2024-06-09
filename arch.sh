@@ -22,6 +22,21 @@ function nvidia_config() {
     exec_log "sudo systemctl enable nvidia-suspend.service nvidia-hibernate.service nvidia-resume.service" "$(eval_gettext "Enabling nvidia services")"
 }
 
+# Função para configurar o Bluetooth
+function bluetooth() {
+    if ask_question "$(eval_gettext "Do you want to use bluetooth ?")"; then
+        local -r inlst="
+            bluez
+            bluez-plugins
+            bluez-utils
+        "
+
+        install_lst "${inlst}"
+
+        exec_log "sudo systemctl enable bluetooth" "$(eval_gettext "enabling bluetooth service")"
+    fi
+}
+
 # Fuso horário e localização
 echo "Escolha o fuso horário (ex: America/Sao_Paulo, Europe/London, etc.):"
 read TIMEZONE
@@ -68,8 +83,12 @@ if [ "$INSTALL_NVIDIA" == "y" ]; then
     nvidia_config
 fi
 
+# Configurar Bluetooth
+bluetooth
+
 # Habilitar serviços
 systemctl enable NetworkManager
 
 # Parar a instalação aqui
 echo "Instalação básica concluída. A instalação foi parada."
+

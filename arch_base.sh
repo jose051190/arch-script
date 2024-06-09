@@ -45,39 +45,39 @@ cfdisk $DISK
 
 # Formatar as partições
 lsblk
-echo "Digite a partição de boot (ex: ${DISK}1):"
+echo "Escolha a partição de boot:"
 read PARTITION_BOOT
-echo "Digite a partição swap (opcional, ex: ${DISK}2 ou deixe em branco):"
+echo "Escolha a partição swap (opcional, deixe em branco se não tiver):"
 read PARTITION_SWAP
-echo "Digite a partição raiz (ex: ${DISK}3):"
+echo "Escolha a partição raiz:"
 read PARTITION_ROOT
-echo "Digite a partição home (opcional, ex: ${DISK}4 ou deixe em branco):"
+echo "Escolha a partição home (opcional, deixe em branco se não tiver):"
 read PARTITION_HOME
 
 echo "Formatando as partições..."
-mkfs.fat -F32 $PARTITION_BOOT
+mkfs.fat -F32 /dev/$PARTITION_BOOT
 if [ -n "$PARTITION_SWAP" ]; then
-    mkswap $PARTITION_SWAP
-    swapon $PARTITION_SWAP
+    mkswap /dev/$PARTITION_SWAP
+    swapon /dev/$PARTITION_SWAP
 fi
-mkfs.ext4 $PARTITION_ROOT
+mkfs.ext4 /dev/$PARTITION_ROOT
 if [ -n "$PARTITION_HOME" ]; then
-    mkfs.ext4 $PARTITION_HOME
+    mkfs.ext4 /dev/$PARTITION_HOME
 fi
 
 # Montar os sistemas de arquivos
 echo "Montando os sistemas de arquivos..."
-mount $PARTITION_ROOT /mnt
+mount /dev/$PARTITION_ROOT /mnt
 mkdir /mnt/boot
-mount $PARTITION_BOOT /mnt/boot
+mount /dev/$PARTITION_BOOT /mnt/boot
 if [ -n "$PARTITION_HOME" ]; then
     mkdir /mnt/home
-    mount $PARTITION_HOME /mnt/home
+    mount /dev/$PARTITION_HOME /mnt/home
 fi
 
 # Instalar os pacotes essenciais
 echo "Instalando os pacotes essenciais..."
-pacstrap /mnt base linux linux-firmware vim base-devel networkmanager
+pacstrap /mnt base linux linux-firmware base-devel networkmanager network-manager-applet
 
 # Configurar o sistema
 echo "Configurando o sistema..."

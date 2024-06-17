@@ -44,7 +44,7 @@ mount $particao_boot /mnt/boot
 pacstrap -K /mnt base linux linux-firmware nano dhcpcd base-devel intel-ucode networkmanager network-manager-applet bash-completion
 
 # Copiar o script de chroot para o ambiente montado
-cp arch_install_part2.sh /mnt/
+cp arch_install_part2.sh arch_install_part3.sh /mnt/
 
 # Configurar o sistema
 genfstab -U /mnt >> /mnt/etc/fstab

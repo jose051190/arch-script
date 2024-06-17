@@ -1,48 +1,29 @@
 #!/bin/bash
 
-# Função para instalar drivers de vídeo NVIDIA
-function install_nvidia() {
-    local -r inlst="
-        nvidia-dkms
-        nvidia-utils
-        lib32-nvidia-utils
-        nvidia-settings
-        vulkan-icd-loader
-        lib32-vulkan-icd-loader
-        egl-wayland
-        opencl-nvidia
-        lib32-opencl-nvidia
-        libvdpau-va-gl
-        libvdpau
-        libva-nvidia-driver
-    "
-    pacman -S --noconfirm $inlst
-    echo -e 'options nvidia_drm modeset=1 nvidia_drm fbdev=1 ' | sudo tee -a /etc/modprobe.d/nvidia.conf
-    sudo sed -i '/^MODULES=(/ s/)$/ nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
-    sudo systemctl enable nvidia-suspend.service nvidia-hibernate.service nvidia-resume.service
+# Função para verificar o status dos comandos
+check_command() {
+  if [ $? -ne 0 ]; then
+    echo "Erro ao executar: $1"
+    exit 1
+  fi
 }
 
-# Função para instalar e configurar o Bluetooth
-function install_bluetooth() {
-    local -r inlst="
-        bluez
-        bluez-plugins
-        bluez-utils
-    "
-    pacman -S --noconfirm $inlst
-    sudo systemctl enable bluetooth
-}
+# Instalar Plasma e pacotes adicionais sem confirmação
+pacman -S --noconfirm plasma-desktop plasma-meta plasma-workspace konsole okular sddm xorg ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts elisa gwenview plymouth kwayland kwayland-integration konsole kwrite packagekit-qt ark egl-wayland dolphin dolphin-plugins xdg-desktop-portal-kde okular spectacle partitionmanager qt6-multimedia qt6-multimedia-gstreamer qt6-multimedia-ffmpeg qt6-wayland kdeplasma-addons kcalc plasma-systemmonitor kdeconnect kio-gdrive lokalize kde-dev-utils kompare ghostwriter knotes kclock timeshift nvim
+check_command "pacman -S plasma-desktop e outros pacotes"
 
-# Verificar se o usuário é root
-if [ "$EUID" -ne 0 ]; then
-    echo "Please run as root"
-    exit
-fi
+# Configurar GRUB para Plymouth
+sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/&splash rd.udev.log_priority=3 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia.NVreg_EnableGpuFirmware=0 /' /etc/default/grub
+check_command "sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=\"/&splash rd.udev.log_priority=3 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia.NVreg_EnableGpuFirmware=0 /' /etc/default/grub"
 
-# Instalar drivers da NVIDIA
-install_nvidia
+# Atualizar GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
+check_command "grub-mkconfig -o /boot/grub/grub.cfg"
 
-# Instalar e configurar o Bluetooth
-install_bluetooth
+# Habilitar SDDM
+systemctl enable sddm.service
+check_command "systemctl enable sddm.service"
 
-echo "Drivers da NVIDIA e Bluetooth instalados com sucesso."
+# Finalizar
+echo "Instalação do KDE Plasma e pacotes adicionais concluída. Rebootando o sistema..."
+reboot

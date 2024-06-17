@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ajustar teclado e idioma
-loadkeys br-abnt2
+#loadkeys br-abnt2
 echo "pt_BR.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen
 export LANG=pt_BR.UTF-8

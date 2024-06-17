@@ -46,11 +46,11 @@ echo "Defina a senha do usuário jose:"
 passwd jose
 sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 
-# Instalar yay
-cd /tmp/
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
+# # Instalar yay
+# cd /tmp/
+# git clone https://aur.archlinux.org/yay.git
+# cd yay
+# makepkg -si
 
 # Finalizar instalação
 exit

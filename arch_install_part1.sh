@@ -9,20 +9,26 @@ export LANG=pt_BR.UTF-8
 # Atualizar o relógio do sistema
 timedatectl set-ntp true
 
-# Partição dos discos
+# Listar os discos disponíveis
 fdisk -l
 lsblk
-echo "Particione seus discos usando cfdisk. Depois de particionado, pressione qualquer tecla para continuar..."
-cfdisk
+
+# Pedir para o usuário selecionar o disco para particionar
+echo "Digite o disco que deseja particionar (e.g., /dev/sda): "
+read disco
+
+# Particionar o disco selecionado
+echo "Particione o disco $disco usando cfdisk. Depois de particionado, pressione qualquer tecla para continuar..."
+cfdisk $disco
 read -n 1 -s
 
 # Listar as partições disponíveis
 lsblk
 
 # Pedir para o usuário informar as partições
-echo "Digite a partição de boot (e.g., /dev/sda1): "
+echo "Digite a partição de boot (e.g., ${disco}1): "
 read particao_boot
-echo "Digite a partição raiz (e.g., /dev/sda2): "
+echo "Digite a partição raiz (e.g., ${disco}2): "
 read particao_raiz
 
 # Formatar as partições

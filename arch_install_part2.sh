@@ -115,12 +115,5 @@ check_command "passwd jose"
 sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 check_command "sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers"
 
-# Instalar yay
-# cd /tmp/
-# git clone https://aur.archlinux.org/yay.git
-# cd yay
-# makepkg -si
-# check_command "instalação do yay"
-
 # Finalizar instalação
 exit

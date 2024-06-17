@@ -21,8 +21,8 @@ locale-gen
 check_command "locale-gen"
 echo "LANG=pt_BR.UTF-8" > /etc/locale.conf
 check_command "echo 'LANG=pt_BR.UTF-8' > /etc/locale.conf"
-echo "KEYMAP=br-abnt2" > /etc/vconsole.conf
-check_command "echo 'KEYMAP=br-abnt2' > /etc/vconsole.conf"
+#echo "KEYMAP=br-abnt2" > /etc/vconsole.conf
+#check_command "echo 'KEYMAP=br-abnt2' > /etc/vconsole.conf"
 
 # Configuração de rede
 echo "arch" > /etc/hostname
@@ -44,9 +44,19 @@ check_command "passwd"
 # Habilitar multilib e outras configurações do pacman
 sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf
 check_command "sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
+
+# Descomentar configurações no pacman.conf e adicionar ILoveCandy
+sed -i 's/^#Color/Color/' /etc/pacman.conf
+check_command "sed -i 's/^#Color/Color/' /etc/pacman.conf"
+sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
+check_command "sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf"
+sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
+check_command "sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf"
+grep -q '^ParallelDownloads = 5' /etc/pacman.conf && sed -i '/^ParallelDownloads = 5/a ILoveCandy' /etc/pacman.conf || echo -e '\nParallelDownloads = 5\nILoveCandy' >> /etc/pacman.conf
+check_command "adicionar ILoveCandy"
 pacman -Syy
 check_command "pacman -Syy"
-pacman -S grub efibootmgr dialog os-prober ntfs-3g mtools dosfstools linux-headers bluez bluez-utils bluez-plugins git xdg-utils xdg-user-dirs wget curl pipewire lib32-pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber alsa-utils alsa-firmware alsa-tools sof-firmware
+pacman -S --noconfirm grub efibootmgr dialog os-prober ntfs-3g mtools dosfstools linux-headers bluez bluez-utils bluez-plugins git xdg-utils xdg-user-dirs wget curl pipewire lib32-pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber alsa-utils alsa-firmware alsa-tools sof-firmware
 check_command "pacman -S pacotes essenciais"
 
 # Habilitar serviços
@@ -73,7 +83,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 check_command "grub-mkconfig -o /boot/grub/grub.cfg"
 
 # Configurar drivers da NVIDIA
-pacman -S nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings vulkan-icd-loader lib32-vulkan-icd-loader egl-wayland opencl-nvidia lib32-opencl-nvidia libvdpau-va-gl libvdpau libva-nvidia-driver
+pacman -S --noconfirm nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings vulkan-icd-loader lib32-vulkan-icd-loader egl-wayland opencl-nvidia lib32-opencl-nvidia libvdpau-va-gl libvdpau libva-nvidia-driver
 check_command "pacman -S pacotes NVIDIA"
 
 # Criar arquivo de configuração do modprobe para NVIDIA

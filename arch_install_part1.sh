@@ -9,8 +9,9 @@ export LANG=pt_BR.UTF-8
 # Atualizar o relógio do sistema
 timedatectl set-ntp true
 
-# Listar os discos disponíveis
-fdisk -l | grep "Disk /dev/" | awk '{print $2}' | cut -d: -f1 | nl -n ln -w 2 -s ') '
+# Listar os discos disponíveis usando lsblk
+echo "Discos disponíveis:"
+lsblk -d -o NAME,SIZE,MODEL | grep -v "loop" | grep -v "sr0" | nl -n ln -w 2 -s ') '
 
 # Pedir para o usuário selecionar os discos para particionar
 echo "Digite o número dos discos que deseja particionar, separados por espaço (e.g., 1 2 3 ...): "
@@ -19,8 +20,8 @@ read -a nums_discos
 # Obter os discos selecionados
 discos=()
 for num in "${nums_discos[@]}"; do
-    disco=$(fdisk -l | grep "Disk /dev/" | awk '{print $2}' | cut -d: -f1 | sed -n "${num}p")
-    discos+=("$disco")
+    disco=$(lsblk -d -o NAME | grep -v "loop" | grep -v "sr0" | sed -n "${num}p")
+    discos+=("/dev/$disco")
 done
 
 # Particionar os discos selecionados

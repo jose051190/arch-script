@@ -10,17 +10,23 @@ export LANG=pt_BR.UTF-8
 timedatectl set-ntp true
 
 # Listar os discos disponíveis
-fdisk -l
-lsblk
+fdisk -l | grep "Disk /dev/" | awk '{print $2}' | cut -d: -f1 | nl -n ln -w 2 -s ') '
 
-# Pedir para o usuário selecionar o disco para particionar
-echo "Digite o disco que deseja particionar (e.g., /dev/sda): "
-read disco
+# Pedir para o usuário selecionar os discos para particionar
+echo "Digite o número dos discos que deseja particionar, separados por espaço (e.g., 1 2 3 ...): "
+read nums_discos
+discos=($(fdisk -l | grep "Disk /dev/" | awk '{print $2}' | cut -d: -f1 | sed -n "${nums_discos// /p};${nums_discos// /p}p"))
 
-# Particionar o disco selecionado
-echo "Particione o disco $disco usando cfdisk. Depois de particionado, pressione qualquer tecla para continuar..."
-cfdisk $disco
-read -n 1 -s
+# Particionar os discos selecionados
+for disco in "${discos[@]}"; do
+    echo "Deseja particionar o disco $disco manualmente? (s/n): "
+    read particionar_manualmente
+    if [ "$particionar_manualmente" == "s" ]; then
+        echo "Particione o disco $disco usando cfdisk. Depois de particionado, pressione qualquer tecla para continuar..."
+        cfdisk $disco
+        read -n 1 -s
+    fi
+done
 
 # Listar as partições disponíveis
 lsblk
@@ -44,7 +50,7 @@ mount $particao_boot /mnt/boot
 pacstrap -K /mnt base linux linux-firmware nano dhcpcd base-devel intel-ucode networkmanager network-manager-applet bash-completion
 
 # Copiar o script de chroot para o ambiente montado
-cp arch_install_part2.sh arch_install_part3.sh /mnt/
+cp arch_install_part2.sh /mnt/
 
 # Configurar o sistema
 genfstab -U /mnt >> /mnt/etc/fstab

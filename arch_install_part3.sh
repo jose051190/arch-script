@@ -8,26 +8,8 @@ check_command() {
   fi
 }
 
-# Resumo das ações que serão realizadas
-echo "Este script irá realizar as seguintes ações:"
-echo "1. Instalar Plasma e pacotes adicionais."
-echo "2. Configurar o GRUB para usar Plymouth."
-echo "3. Adicionar plymouth ao vetor HOOKS em mkinitcpio.conf."
-echo "4. Atualizar GRUB e mkinitcpio."
-echo "5. Habilitar SDDM."
-echo "6. Instalar yay."
-
-# Pedir confirmação ao usuário
-echo "Deseja continuar com a instalação? (s/n)"
-read confirmacao
-
-if [ "$confirmacao" != "s" ]; então
-  echo "Instalação cancelada."
-  exit 0
-fi
-
 # Instalar Plasma e pacotes adicionais sem confirmação
-sudo pacman -S --noconfirm plasma-desktop plasma-meta plasma-workspace konsole okular sddm xorg ufw ffmpeg ffmpegthumbs ffmpegthumbnailer rclone nextcloud-client ttf-nerd-fonts-symbols elisa gwenview plymouth kwayland kwayland-integration konsole kwrite packagekit-qt6 ark egl-wayland dolphin dolphin-plugins xdg-desktop-portal-kde okular spectacle partitionmanager qt6-multimedia qt6-multimedia-gstreamer qt6-multimedia-ffmpeg qt6-wayland kdeplasma-addons kcalc plasma-systemmonitor kdeconnect kio-gdrive lokalize kde-dev-utils kompare ghostwriter knotes kclock timeshift neovim firefox-i18n-pt-br gparted plasma-firewall ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono
+sudo pacman -S --noconfirm plasma-desktop plasma-meta plasma-workspace konsole okular sddm xorg ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols elisa gwenview plymouth kwayland kwayland-integration konsole kwrite packagekit-qt6 ark egl-wayland dolphin dolphin-plugins xdg-desktop-portal-kde okular spectacle partitionmanager qt6-multimedia qt6-multimedia-gstreamer qt6-multimedia-ffmpeg qt6-wayland kdeplasma-addons kcalc plasma-systemmonitor kdeconnect kio-gdrive lokalize kde-dev-utils kompare ghostwriter knotes kclock timeshift neovim
 check_command "pacman -S plasma-desktop e outros pacotes"
 
 # Configurar GRUB para Plymouth
@@ -45,10 +27,6 @@ check_command "sudo sed -i '/^HOOKS=/ s/\(base udev\)/\1 plymouth/' /etc/mkinitc
 # Atualizar mkinitcpio
 sudo mkinitcpio -p linux
 check_command "sudo mkinitcpio -p linux"
-
-# Habilitar Firewall
-sudo systemctl enable ufw.service
-check_command "sudo systemctl enable ufw.service"
 
 # Habilitar SDDM
 sudo systemctl enable sddm.service

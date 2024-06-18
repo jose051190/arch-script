@@ -17,8 +17,8 @@ sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/&splash rd.udev.log_priority=3 vt.gl
 check_command "sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=\"/&splash rd.udev.log_priority=3 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia.NVreg_EnableGpuFirmware=0 /' /etc/default/grub"
 
 # Atualizar GRUB
-sudo grub-mkconfig -o /boot/grub/grub.cfg --noconfirm
-check_command "sudo grub-mkconfig -o /boot/grub/grub.cfg --noconfirm"
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+check_command "sudo grub-mkconfig -o /boot/grub/grub.cfg"
 
 # Adicionar plymouth ao vetor HOOKS em mkinitcpio.conf após base e udev
 sudo sed -i '/^HOOKS=/ s/\(base udev\)/\1 plymouth/' /etc/mkinitcpio.conf

@@ -14,8 +14,14 @@ fdisk -l | grep "Disk /dev/" | awk '{print $2}' | cut -d: -f1 | nl -n ln -w 2 -s
 
 # Pedir para o usuário selecionar os discos para particionar
 echo "Digite o número dos discos que deseja particionar, separados por espaço (e.g., 1 2 3 ...): "
-read nums_discos
-discos=($(fdisk -l | grep "Disk /dev/" | awk '{print $2}' | cut -d: -f1 | sed -n "${nums_discos// /p};${nums_discos// /p}p"))
+read -a nums_discos
+
+# Obter os discos selecionados
+discos=()
+for num in "${nums_discos[@]}"; do
+    disco=$(fdisk -l | grep "Disk /dev/" | awk '{print $2}' | cut -d: -f1 | sed -n "${num}p")
+    discos+=("$disco")
+done
 
 # Particionar os discos selecionados
 for disco in "${discos[@]}"; do

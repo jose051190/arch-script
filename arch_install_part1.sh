@@ -9,9 +9,11 @@ export LANG=pt_BR.UTF-8
 # Atualizar o relógio do sistema
 timedatectl set-ntp true
 
+#!/bin/bash
+
 # Listar os discos disponíveis usando lsblk
 echo "Discos disponíveis:"
-lsblk -d -o NAME,SIZE,MODEL | grep -v "loop" | grep -v "sr0" | nl -n ln -w 2 -s ') '
+lsblk -d -o NAME,SIZE,MODEL | grep -v "loop" | grep -v "sr0" | tail -n +2 | nl -n ln -w 2 -s ') '
 
 # Pedir para o usuário selecionar os discos para particionar
 echo "Digite o número dos discos que deseja particionar, separados por espaço (e.g., 1 2 3 ...): "

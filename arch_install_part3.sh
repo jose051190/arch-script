@@ -34,7 +34,7 @@ check_command "sudo systemctl enable sddm.service"
 
 # Instalar yay
 cd /tmp/
-sudo git clone https://aur.archlinux.org/yay.git
+git clone https://aur.archlinux.org/yay.git
 check_command "git clone https://aur.archlinux.org/yay.git"
 cd yay
 makepkg -si --noconfirm

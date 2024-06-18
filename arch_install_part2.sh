@@ -67,7 +67,6 @@ check_command "systemctl start bluetooth.service"
 
 systemctl enable NetworkManager
 check_command "systemctl enable NetworkManager"
-systemctl start NetworkManager
 check_command "systemctl start NetworkManager"
 
 # Instalar e configurar GRUB
@@ -106,14 +105,12 @@ check_command "systemctl enable nvidia-hibernate.service"
 systemctl enable nvidia-resume.service
 check_command "systemctl enable nvidia-resume.service"
 
-# Criar usuário e configurar sudo
+# Criar usuário
 useradd -mG wheel jose
 check_command "useradd -mG wheel jose"
 echo "Defina a senha do usuário jose:"
 passwd jose
 check_command "passwd jose"
-sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
-check_command "sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers"
 
 # Finalizar instalação
 exit

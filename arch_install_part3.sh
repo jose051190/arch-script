@@ -37,7 +37,7 @@ cd /tmp/
 sudo git clone https://aur.archlinux.org/yay.git
 check_command "git clone https://aur.archlinux.org/yay.git"
 cd yay
-sudo makepkg -si --noconfirm
+makepkg -si --noconfirm
 check_command "makepkg -si"
 
 # Perguntar ao usuário se deseja reiniciar

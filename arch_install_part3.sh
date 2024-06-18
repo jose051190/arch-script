@@ -2,7 +2,7 @@
 
 # Função para verificar o status dos comandos
 check_command() {
-  if [ $? -ne 0 ]; então
+  if [ $? -ne 0 ]; then
     echo "Erro ao executar: $1"
     exit 1
   fi
@@ -44,7 +44,7 @@ check_command "makepkg -si"
 echo "Instalação do KDE Plasma e pacotes adicionais concluída. Deseja reiniciar o sistema agora? (s/n)"
 read resposta
 
-if [ "$resposta" == "s" ]; então
+if [ "$resposta" == "s" ]; then
   echo "Reiniciando o sistema..."
   sudo reboot
 else

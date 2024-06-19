@@ -9,7 +9,7 @@ check_command() {
 }
 
 # Instalar Plasma e pacotes adicionais sem confirmação
-sudo pacman -S --noconfirm plasma-desktop plasma-meta plasma-workspace konsole okular sddm xorg ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols elisa gwenview plymouth kwayland kwayland-integration konsole kwrite packagekit-qt6 ark egl-wayland dolphin dolphin-plugins xdg-desktop-portal-kde okular spectacle partitionmanager qt6-multimedia qt6-multimedia-gstreamer qt6-multimedia-ffmpeg qt6-wayland kdeplasma-addons kcalc plasma-systemmonitor kdeconnect kio-gdrive lokalize kde-dev-utils kompare ghostwriter knotes kclock timeshift neovim firefox-i18n-pt-br gparted plasma-firewall ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono rclone ufw fastfetch neofetch htop ncdu
+sudo pacman -S --noconfirm plasma-desktop plasma-meta plasma-workspace konsole okular sddm xorg ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols elisa gwenview plymouth kwayland kwayland-integration konsole kwrite packagekit-qt6 ark egl-wayland dolphin dolphin-plugins xdg-desktop-portal-kde okular spectacle partitionmanager qt6-multimedia qt6-multimedia-gstreamer qt6-multimedia-ffmpeg qt6-wayland kdeplasma-addons kcalc plasma-systemmonitor kdeconnect kio-gdrive lokalize kde-dev-utils kompare ghostwriter knotes kclock timeshift neovim firefox-i18n-pt-br gparted plasma-firewall ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono rclone ufw fastfetch neofetch htop ncdu qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat dmidecode libguestfs
 check_command "pacman -S plasma-desktop e outros pacotes"
 
 # Configurar GRUB para Plymouth
@@ -27,6 +27,17 @@ check_command "sudo sed -i '/^HOOKS=/ s/\(base udev\)/\1 plymouth/' /etc/mkinitc
 # Atualizar mkinitcpio
 sudo mkinitcpio -p linux
 check_command "sudo mkinitcpio -p linux"
+
+# Ativação e início do serviço libvirtd
+sudo systemctl enable --now libvirtd.service
+
+# Configuração de permissões
+sudo sed -i 's/#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/' /etc/libvirt/libvirtd.conf
+sudo sed -i 's/#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/' /etc/libvirt/libvirtd.conf
+sudo systemctl restart libvirtd.service
+
+# Adição do usuário ao grupo libvirt
+sudo usermod -a -G libvirt $(whoami)
 
 # Habilitar SDDM
 sudo systemctl enable sddm.service

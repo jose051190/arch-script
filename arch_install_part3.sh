@@ -52,7 +52,7 @@ makepkg -si --noconfirm
 check_command "makepkg -si"
 
 # Pacotes adicionais do AUR
-yay -S --needed --noconfirm onlyoffice-bin visual-studio-code-bin 
+yay -S --needed --noconfirm onlyoffice-bin visual-studio-code-bin pdfsam 
 
 # Perguntar ao usuário se deseja reiniciar
 echo "Instalação do KDE Plasma e pacotes adicionais concluída. Deseja reiniciar o sistema agora? (s/n)"

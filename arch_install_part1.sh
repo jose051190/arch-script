@@ -91,7 +91,7 @@ fi
 
 # Copiar o script de chroot para o ambiente montado
 echo "Copiando script de chroot para o ambiente montado..."
-cp arch_install_part2.sh /mnt/
+cp arch_install_part2.sh arch_install_part3.sh /mnt/
 if [ $? -ne 0 ]; then
   echo "Erro ao copiar script de chroot"
   exit 1

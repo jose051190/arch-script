@@ -42,7 +42,7 @@ check_command "makepkg -si"
 #yay -S --needed --noconfirm onlyoffice-bin visual-studio-code-bin pdfsam protonup-qt nvidia-beta-dkms nvidia-utils-beta lib32-nvidia-utils-beta opencl-nvidia-beta lib32-opencl-nvidia-beta nvidia-settings bottles dxvk-bin proton-ge-custom protontricks protonup-qt wine-installer gamescope-nvidia
 
 # Configurar drivers da NVIDIA
-pacman -S --noconfirm libva-nvidia-driver vulkan-icd-loader lib32-vulkan-icd-loader egl-wayland libvdpau-va-gl libvdpau
+pacman -S --needed --noconfirm libva-nvidia-driver vulkan-icd-loader lib32-vulkan-icd-loader egl-wayland libvdpau-va-gl libvdpau
 check_command "pacman -S pacotes NVIDIA"
 
 # Criar arquivo de configuração do modprobe para NVIDIA
@@ -64,6 +64,15 @@ systemctl enable nvidia-hibernate.service
 check_command "systemctl enable nvidia-hibernate.service"
 systemctl enable nvidia-resume.service
 check_command "systemctl enable nvidia-resume.service"
+
+pacman -S --needed --noconfirm efibootmgr dialog os-prober ntfs-3g mtools dosfstools linux-headers bluez bluez-utils bluez-plugins git xdg-utils wget curl
+check_command "pacman -S pacotes essenciais"
+
+# Habilitar serviços
+systemctl enable bluetooth.service
+check_command "systemctl enable bluetooth.service"
+systemctl start bluetooth.service
+check_command "systemctl start bluetooth.service"
 
 # Finalizar instalação
 exit

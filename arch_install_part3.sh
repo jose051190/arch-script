@@ -32,12 +32,12 @@ check_command "sudo mkinitcpio -p linux"
 sudo systemctl enable --now libvirtd.service
 
 # Configuração de permissões
-sudo sed -i 's/#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/' /etc/libvirt/libvirtd.conf
-sudo sed -i 's/#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/' /etc/libvirt/libvirtd.conf
-sudo systemctl restart libvirtd.service
+#sudo sed -i 's/#unix_sock_group = "libvirt"/unix_sock_group = "libvirt"/' /etc/libvirt/libvirtd.conf
+#sudo sed -i 's/#unix_sock_rw_perms = "0770"/unix_sock_rw_perms = "0770"/' /etc/libvirt/libvirtd.conf
+#sudo systemctl restart libvirtd.service
 
 # Adição do usuário ao grupo libvirt
-sudo usermod -a -G libvirt $(whoami)
+#sudo usermod -a -G libvirt $(whoami)
 
 # Habilitar SDDM
 sudo systemctl enable sddm.service

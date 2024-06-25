@@ -24,3 +24,36 @@ check_command "adicionar ILoveCandy"
 pacman -Syu
 check_command "pacman -Syy"
 
+# Adicionar parâmetros da NVIDIA ao GRUB
+sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& nvidia-drm.modeset=1/' /etc/default/grub
+check_command "sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=\"[^\"]*/& nvidia-drm.modeset=1/' /etc/default/grub"
+grub-mkconfig -o /boot/grub/grub.cfg
+check_command "grub-mkconfig -o /boot/grub/grub.cfg"
+
+# Configurar drivers da NVIDIA
+pacman -S --noconfirm nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings vulkan-icd-loader lib32-vulkan-icd-loader egl-wayland opencl-nvidia lib32-opencl-nvidia libvdpau-va-gl libvdpau libva-nvidia-driver
+check_command "pacman -S pacotes NVIDIA"
+
+# Criar arquivo de configuração do modprobe para NVIDIA
+cat <<EOL > /etc/modprobe.d/nvidia.conf
+options nvidia_drm modeset=1
+EOL
+check_command "criação de /etc/modprobe.d/nvidia.conf"
+
+# Atualizar o initramfs
+sed -i 's/^MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+check_command "sed -i 's/^MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf"
+mkinitcpio -P
+check_command "mkinitcpio -P"
+
+# Habilitar serviços NVIDIA
+systemctl enable nvidia-suspend.service
+check_command "systemctl enable nvidia-suspend.service"
+systemctl enable nvidia-hibernate.service
+check_command "systemctl enable nvidia-hibernate.service"
+systemctl enable nvidia-resume.service
+check_command "systemctl enable nvidia-resume.service"
+
+# Finalizar instalação
+exit
+

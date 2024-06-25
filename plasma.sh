@@ -30,3 +30,22 @@ check_command "sudo mkinitcpio -p linux"
 
 # Ativação e início do serviço libvirtd
 sudo systemctl enable --now libvirtd.service
+
+# Habilitar SDDM
+sudo systemctl enable sddm.service
+check_command "sudo systemctl enable sddm.service"
+
+# Habilitar Firewall
+sudo systemctl enable ufw.service
+check_command "sudo systemctl enable ufw.service"
+
+# Perguntar ao usuário se deseja reiniciar
+echo "Instalação do KDE Plasma e pacotes adicionais concluída. Deseja reiniciar o sistema agora? (s/n)"
+read resposta
+
+if [ "$resposta" == "s" ]; then
+  echo "Reiniciando o sistema..."
+  sudo reboot
+else
+  echo "Reinicialização cancelada. Por favor, reinicie o sistema manualmente para aplicar as alterações."
+fi

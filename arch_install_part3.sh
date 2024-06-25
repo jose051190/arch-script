@@ -9,7 +9,7 @@ check_command() {
 }
 
 # Instalar Plasma e pacotes adicionais sem confirmação
-sudo pacman -S --needed --noconfirm plasma-meta plasma-workspace konsole okular sddm xorg filelight ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols elisa gwenview plymouth kwayland kwayland-integration konsole kwrite packagekit-qt6 ark egl-wayland dolphin dolphin-plugins xdg-desktop-portal-kde okular spectacle partitionmanager qt6-multimedia qt6-multimedia-gstreamer qt6-multimedia-ffmpeg qt6-wayland kdeplasma-addons kcalc plasma-systemmonitor kdeconnect kio-gdrive lokalize kde-dev-utils kompare ghostwriter knotes kclock timeshift neovim firefox-i18n-pt-br gparted plasma-firewall ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono rclone telegram-desktop ufw fastfetch neofetch htop ncdu qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat dmidecode libguestfs steam lutris wine-staging goverlay pycharm-community-edition
+sudo pacman -S --needed --noconfirm plasma-meta plasma-workspace konsole okular sddm xorg filelight ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols elisa gwenview plymouth kwayland kwayland-integration konsole kwrite packagekit-qt6 ark egl-wayland dolphin dolphin-plugins xdg-desktop-portal-kde okular spectacle partitionmanager qt6-multimedia qt6-multimedia-gstreamer qt6-multimedia-ffmpeg qt6-wayland kdeplasma-addons kcalc plasma-systemmonitor kdeconnect kio-gdrive lokalize kde-dev-utils kompare ghostwriter knotes kclock timeshift neovim firefox-i18n-pt-br gparted plasma-firewall ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono rclone telegram-desktop ufw fastfetch neofetch htop ncdu qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat dmidecode libguestfs steam lutris wine-staging goverlay pycharm-community-edition ufw
 check_command "pacman -S plasma-desktop e outros pacotes"
 
 # Configurar GRUB para Plymouth
@@ -42,6 +42,10 @@ sudo systemctl enable --now libvirtd.service
 # Habilitar SDDM
 sudo systemctl enable sddm.service
 check_command "sudo systemctl enable sddm.service"
+
+# Habilitar Firewall
+sudo systemctl enable ufw.service
+check_command "sudo systemctl enable ufw.service"
 
 # Instalar yay
 cd /tmp/

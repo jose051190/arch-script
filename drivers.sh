@@ -39,7 +39,7 @@ makepkg -si --noconfirm
 check_command "makepkg -si"
 
 # Pacotes adicionais do AUR
-#yay -S --needed --noconfirm onlyoffice-bin visual-studio-code-bin pdfsam protonup-qt nvidia-beta-dkms nvidia-utils-beta lib32-nvidia-utils-beta opencl-nvidia-beta lib32-opencl-nvidia-beta nvidia-settings
+#yay -S --needed --noconfirm onlyoffice-bin visual-studio-code-bin pdfsam protonup-qt nvidia-beta-dkms nvidia-utils-beta lib32-nvidia-utils-beta opencl-nvidia-beta lib32-opencl-nvidia-beta nvidia-settings bottles dxvk-bin proton-ge-custom protontricks protonup-qt wine-installer gamescope-nvidia
 
 # Configurar drivers da NVIDIA
 pacman -S --noconfirm libva-nvidia-driver vulkan-icd-loader lib32-vulkan-icd-loader egl-wayland libvdpau-va-gl libvdpau

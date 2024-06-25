@@ -30,8 +30,19 @@ check_command "sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=\"[^\"]*/& nvidia-drm.modese
 grub-mkconfig -o /boot/grub/grub.cfg
 check_command "grub-mkconfig -o /boot/grub/grub.cfg"
 
+# Instalar yay
+cd /tmp/
+git clone https://aur.archlinux.org/yay.git
+check_command "git clone https://aur.archlinux.org/yay.git"
+cd yay
+makepkg -si --noconfirm
+check_command "makepkg -si"
+
+# Pacotes adicionais do AUR
+#yay -S --needed --noconfirm onlyoffice-bin visual-studio-code-bin pdfsam protonup-qt nvidia-beta-dkms nvidia-utils-beta lib32-nvidia-utils-beta opencl-nvidia-beta lib32-opencl-nvidia-beta nvidia-settings
+
 # Configurar drivers da NVIDIA
-pacman -S --noconfirm nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings vulkan-icd-loader lib32-vulkan-icd-loader egl-wayland opencl-nvidia lib32-opencl-nvidia libvdpau-va-gl libvdpau libva-nvidia-driver
+pacman -S --noconfirm libva-nvidia-driver vulkan-icd-loader lib32-vulkan-icd-loader egl-wayland libvdpau-va-gl libvdpau
 check_command "pacman -S pacotes NVIDIA"
 
 # Criar arquivo de configuração do modprobe para NVIDIA

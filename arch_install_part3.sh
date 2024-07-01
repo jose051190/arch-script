@@ -44,8 +44,8 @@ sudo systemctl enable sddm.service
 check_command "sudo systemctl enable sddm.service"
 
 # Habilitar Firewall
-sudo systemctl enable ufw.service
-check_command "sudo systemctl enable ufw.service"
+sudo systemctl enable firewalld.service
+check_command "sudo systemctl enable firewalld.service"
 
 # Instalar yay
 cd /tmp/

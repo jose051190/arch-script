@@ -7,15 +7,18 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Ajustar teclado e idioma
-#loadkeys br-abnt2
-echo "pt_BR.UTF-8 UTF-8" >> /etc/locale.gen
+echo "Ajustando o idioma para pt_BR.UTF-8..."
+if ! grep -q "pt_BR.UTF-8 UTF-8" /etc/locale.gen; then
+  echo "pt_BR.UTF-8 UTF-8" >> /etc/locale.gen
+fi
 locale-gen
 export LANG=pt_BR.UTF-8
 
 # Atualizar o relógio do sistema
+echo "Atualizando o relógio do sistema..."
 timedatectl set-ntp true
 
-# Listar os discos disponíveis usando lsblk
+# Listar os discos disponíveis
 echo "Discos disponíveis:"
 lsblk -d -o NAME,SIZE,MODEL | grep -vE "loop|sr0|zram" | awk 'NR>1 {print NR-1 ") " $0}'
 
@@ -27,6 +30,10 @@ read -a nums_discos
 discos=()
 for num in "${nums_discos[@]}"; do
     disco=$(lsblk -d -o NAME | grep -vE "loop|sr0|zram" | awk -v n="$num" 'NR==n+1 {print $1}')
+    if [ -z "$disco" ]; then
+        echo "Número de disco inválido: $num"
+        exit 1
+    fi
     discos+=("/dev/$disco")
 done
 
@@ -42,6 +49,7 @@ for disco in "${discos[@]}"; do
 done
 
 # Listar as partições disponíveis
+echo "Partições disponíveis:"
 lsblk
 
 # Pedir para o usuário informar as partições
@@ -49,6 +57,16 @@ echo "Digite a partição de boot (e.g., /dev/sda1): "
 read particao_boot
 echo "Digite a partição raiz (e.g., /dev/sda2): "
 read particao_raiz
+
+# Verificar se as partições existem
+if [ ! -b "$particao_boot" ]; then
+    echo "Partição de boot inválida: $particao_boot"
+    exit 1
+fi
+if [ ! -b "$particao_raiz" ]; then
+    echo "Partição raiz inválida: $particao_raiz"
+    exit 1
+fi
 
 # Formatar as partições
 echo "Formatando partição de boot..."
@@ -66,14 +84,14 @@ if [ $? -ne 0 ]; then
 fi
 
 # Montar a partição raiz e criar subvolumes
-echo "Montando a partição raiz..."
+echo "Montando a partição raiz e criando subvolumes..."
 mount $particao_raiz /mnt
 btrfs subvolume create /mnt/@root
 btrfs subvolume create /mnt/@home
 btrfs subvolume create /mnt/@snapshots
 umount /mnt
 
-# Montar a partição com subvolumes e compressão
+# Montar os subvolumes com compressão
 echo "Montando subvolumes com compressão..."
 mount -o defaults,noatime,compress=zstd,subvol=@root $particao_raiz /mnt
 mkdir -p /mnt/{boot/efi,home,.snapshots,.swap}
@@ -81,6 +99,7 @@ mount -o defaults,noatime,compress=zstd,subvol=@home $particao_raiz /mnt/home
 mount -o defaults,noatime,compress=zstd,subvol=@snapshots $particao_raiz /mnt/.snapshots
 
 # Montar a partição de boot
+echo "Montando a partição de boot..."
 mount $particao_boot /mnt/boot/efi
 
 # Instalar os pacotes essenciais
@@ -91,15 +110,15 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Copiar o script de chroot para o ambiente montado
-echo "Copiando script de chroot para o ambiente montado..."
+# Copiar scripts para o ambiente chroot
+echo "Copiando scripts para o ambiente chroot..."
 cp arch_install_amd_part2.sh arch_install_amd_part3.sh /mnt/
 if [ $? -ne 0 ]; then
-  echo "Erro ao copiar script de chroot"
+  echo "Erro ao copiar scripts para o ambiente chroot"
   exit 1
 fi
 
-# Configurar o sistema
+# Gerar o fstab
 echo "Gerando o fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
 if [ $? -ne 0 ]; then
@@ -107,6 +126,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# Entrar no ambiente chroot e executar a próxima parte da instalação
 echo "Entrando no ambiente chroot..."
 arch-chroot /mnt /bin/bash /arch_install_amd_part2.sh
 if [ $? -ne 0 ]; then

@@ -54,7 +54,7 @@ grep -q '^ParallelDownloads = 5' /etc/pacman.conf && sed -i '/^ParallelDownloads
 check_command "adicionar ILoveCandy"
 pacman -Syu
 check_command "pacman -Syu"
-pacman -S --needed grub efibootmgr dialog os-prober ntfs-3g mtools dosfstools linux-headers bluez bluez-utils bluez-plugins git xdg-utils xdg-user-dirs wget curl pipewire lib32-pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber alsa-utils alsa-firmware alsa-tools sof-firmware
+pacman -S --needed grub efibootmgr dialog os-prober ntfs-3g mtools dosfstools linux-headers bluez bluez-utils bluez-plugins git xdg-utils xdg-user-dirs wget curl pipewire lib32-pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber sof-firmware
 check_command "pacman -S pacotes essenciais"
 
 # Habilitar serviços
@@ -69,7 +69,7 @@ check_command "systemctl start NetworkManager"
 
 # Instalar e configurar GRUB
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-check_command "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB"
+check_command "grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ARCH"
 sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
 check_command "sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub"
 

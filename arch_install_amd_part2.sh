@@ -78,7 +78,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 check_command "grub-mkconfig -o /boot/grub/grub.cfg"
 
 # Instalar pacotes AMD
-pacman -S --needed mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon vulkan-icd-loader lib32-vulkan-icd-loader vulkan-mesa-layers
+pacman -S --needed mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon lib32-vulkan-radeon  libva-mesa-driver lib32-libva-mesa-driver lib32-mesa-vdpau mesa-vdpau vulkan-icd-loader lib32-vulkan-icd-loader vulkan-mesa-layers
 check_command "pacman -S pacotes AMD"
 
 # Criar usuário

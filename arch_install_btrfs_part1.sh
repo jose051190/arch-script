@@ -88,15 +88,15 @@ echo "Montando a partição raiz e criando subvolumes..."
 mount $particao_raiz /mnt
 btrfs subvolume create /mnt/@root
 btrfs subvolume create /mnt/@home
-btrfs subvolume create /mnt/@snapshots
+#btrfs subvolume create /mnt/@snapshots
 umount /mnt
 
 # Montar os subvolumes com compressão
 echo "Montando subvolumes com compressão..."
 mount -o defaults,noatime,compress=zstd,subvol=@root $particao_raiz /mnt
-mkdir -p /mnt/{boot/efi,home,.snapshots,.swap}
+mkdir -p /mnt/{boot/efi,home}
 mount -o defaults,noatime,compress=zstd,subvol=@home $particao_raiz /mnt/home
-mount -o defaults,noatime,compress=zstd,subvol=@snapshots $particao_raiz /mnt/.snapshots
+mount -o #defaults,noatime,compress=zstd,subvol=@snapshots $particao_raiz /mnt/.snapshots
 
 # Montar a partição de boot
 echo "Montando a partição de boot..."

@@ -44,8 +44,8 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 check_command "sudo grub-mkconfig -o /boot/grub/grub.cfg"
 
 # Adicionar plymouth ao vetor HOOKS em mkinitcpio.conf após base e udev
-sudo sed -i '/^HOOKS=/ s/base udev/\1 plymouth/' /etc/mkinitcpio.conf
-check_command "sudo sed -i '/^HOOKS=/ s/base udev/\1 plymouth/' /etc/mkinitcpio.conf"
+sudo sed -i '/^HOOKS=/ s/\(base udev\)/\1 plymouth/' /etc/mkinitcpio.conf
+check_command "sudo sed -i '/^HOOKS=/ s/\(base udev\)/\1 plymouth/' /etc/mkinitcpio.conf"
 
 # Atualizar mkinitcpio
 sudo mkinitcpio -p linux

@@ -104,7 +104,7 @@ mount $particao_boot /mnt/boot/efi
 
 # Instalar os pacotes essenciais
 echo "Instalando pacotes essenciais..."
-pacstrap -K /mnt base linux linux-firmware nano base-devel intel-ucode networkmanager network-manager-applet bash-completion
+pacstrap -K /mnt base linux linux-firmware nano base-devel intel-ucode networkmanager network-manager-applet bash-completion linux-headers
 if [ $? -ne 0 ]; then
   echo "Erro ao instalar pacotes essenciais"
   exit 1

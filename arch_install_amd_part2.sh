@@ -68,7 +68,7 @@ check_command "systemctl enable NetworkManager"
 check_command "systemctl start NetworkManager"
 
 # Instalar e configurar GRUB
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ARCH
 check_command "grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ARCH"
 sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
 check_command "sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub"

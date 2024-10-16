@@ -14,7 +14,7 @@ read desktop_choice
 
 if [ "$desktop_choice" == "1" ]; then
   # Instalar Plasma e pacotes adicionais sem confirmação
-  sudo pacman -S --needed plasma-meta plasma-workspace konsole okular sddm xorg-xwayland filelight ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols inter-font ttf-jetbrains-mono elisa gwenview plymouth kwayland kwayland-integration kfind xwaylandvideobridge konsole kwrite packagekit-qt6 ark egl-wayland dolphin dolphin-plugins xdg-desktop-portal-kde okular spectacle partitionmanager qt6-multimedia qt6-multimedia-gstreamer qt6-multimedia-ffmpeg qt6-wayland kdeplasma-addons kalk sweeper krename plasma-systemmonitor kdeconnect kio-gdrive lokalize kde-dev-utils kompare ghostwriter kclock neovim firefox-i18n-pt-br plasma-firewall ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono rclone telegram-desktop fastfetch htop ncdu virt-manager qemu-full ebtables iptables-nft dnsmasq edk2-ovmf spice-vdagent virt-viewer pycharm-community-edition firewalld
+  sudo pacman -S --needed plasma-meta plasma-workspace konsole okular sddm xorg-xwayland filelight ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols inter-font ttf-jetbrains-mono elisa gwenview plymouth kwayland kwayland-integration kfind xwaylandvideobridge konsole kwrite packagekit-qt6 ark egl-wayland dolphin dolphin-plugins xdg-desktop-portal-kde okular spectacle partitionmanager qt6-multimedia qt6-multimedia-gstreamer qt6-multimedia-ffmpeg qt6-wayland kdeplasma-addons kalk sweeper krename plasma-systemmonitor kdeconnect kio-gdrive lokalize kde-dev-utils kompare ghostwriter kclock neovim firefox-i18n-pt-br plasma-firewall ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono rclone telegram-desktop fastfetch htop ncdu virt-manager qemu-full ebtables iptables-nft dnsmasq edk2-ovmf spice-vdagent virt-viewer pycharm-community-edition firewalld chromium
   check_command "pacman -S plasma-desktop e outros pacotes"
 
   # Habilitar SDDM
@@ -23,7 +23,7 @@ if [ "$desktop_choice" == "1" ]; then
   
 elif [ "$desktop_choice" == "2" ]; then
   # Instalar GNOME e pacotes adicionais sem confirmação
-  sudo pacman -S --needed gnome xorg-xwayland ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols inter-font ttf-jetbrains-mono plymouth xdg-desktop-portal-gnome neovim firefox-i18n-pt-br ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono rclone telegram-desktop fastfetch htop ncdu virt-manager qemu-full ebtables iptables-nft dnsmasq edk2-ovmf spice-vdagent virt-viewer pycharm-community-edition firewalld
+  sudo pacman -S --needed gnome xorg-xwayland ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols inter-font ttf-jetbrains-mono plymouth xdg-desktop-portal-gnome neovim firefox-i18n-pt-br ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono rclone telegram-desktop fastfetch htop ncdu virt-manager qemu-full ebtables iptables-nft dnsmasq edk2-ovmf spice-vdagent virt-viewer pycharm-community-edition firewalld chromium
   check_command "pacman -S gnome e outros pacotes"
 
   # Habilitar GDM

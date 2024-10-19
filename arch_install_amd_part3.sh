@@ -23,7 +23,7 @@ if [ "$desktop_choice" == "1" ]; then
   
 elif [ "$desktop_choice" == "2" ]; then
   # Instalar GNOME e pacotes adicionais sem confirmação
-  sudo pacman -S --needed gnome gnome-tweaks xorg-xwayland wl-clipboard ffmpeg ffmpegthumbs ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols inter-font ttf-jetbrains-mono plymouth xdg-desktop-portal-gnome neovim firefox-i18n-pt-br ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono rclone telegram-desktop fastfetch htop ncdu virt-manager qemu-full ebtables iptables-nft dnsmasq edk2-ovmf spice-vdagent virt-viewer pycharm-community-edition firewalld chromium
+  sudo pacman -S --needed gnome gnome-tweaks xorg-xwayland wl-clipboard ffmpeg ffmpegthumbnailer nextcloud-client ttf-nerd-fonts-symbols inter-font ttf-jetbrains-mono plymouth xdg-desktop-portal-gnome neovim firefox-i18n-pt-br ttf-fira-sans ttf-roboto-mono-nerd ttf-fira-mono rclone telegram-desktop fastfetch htop ncdu virt-manager qemu-full ebtables iptables-nft dnsmasq edk2-ovmf spice-vdagent virt-viewer pycharm-community-edition firewalld chromium
   check_command "pacman -S gnome e outros pacotes"
 
   # Habilitar GDM

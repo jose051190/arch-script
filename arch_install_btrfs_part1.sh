@@ -76,6 +76,14 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# Limpar a partição raiz antes de formatar
+echo "Limpando possíveis sistemas de arquivos antigos da partição raiz..."
+wipefs -a $particao_raiz
+if [ $? -ne 0 ]; then
+  echo "Erro ao limpar a partição raiz"
+  exit 1
+fi
+
 echo "Formatando partição raiz com Btrfs..."
 mkfs.btrfs $particao_raiz
 if [ $? -ne 0 ]; then

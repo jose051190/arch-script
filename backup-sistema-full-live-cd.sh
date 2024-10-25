@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variáveis
-SOURCE="/mnt"  # Usar /mnt como origem após a montagem
+SOURCE="/mnt/"  # Usar /mnt como origem após a montagem
 DESTINATION="jose@192.168.1.20:/home/jose/Homelab/Backups/Backup-full"
 LOG_FOLDER="/mnt/home/jose/Documentos/LogsDeBackup"  # Pasta para armazenar os logs
 LOGFILE="$LOG_FOLDER/backup_$(date +%Y%m%d_%H%M%S).log"  # Caminho completo para o arquivo de log

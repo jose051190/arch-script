@@ -101,6 +101,11 @@ echo "Configuração do firewall do libvirtd ajustada para iptables."
 sudo systemctl enable systemd-timesyncd.service
 sudo systemctl start systemd-timesyncd.service
 
+# Gsconnect
+sudo firewall-cmd --zone=public --permanent --add-port=1714-1764/tcp
+sudo firewall-cmd --zone=public --permanent --add-port=1714-1764/udp
+sudo systemctl restart firewalld.service
+
 echo "Serviço systemd-binfmt reiniciado."
 
 echo "Script de pós-instalação concluído com sucesso!"

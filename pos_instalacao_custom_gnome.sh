@@ -30,7 +30,7 @@ sudo pacman -S --needed steam lutris wine-staging inter-font ttf-jetbrains-mono 
 echo "Pacotes oficiais instalados."
 
 # Instalar pacotes AUR utilizando o yay
-yay -S --needed onlyoffice-bin protontricks protonplus visual-studio-code-bin pcloud-drive heroic-games-launcher-bin
+yay -S --needed onlyoffice-bin protontricks protonplus visual-studio-code-bin pcloud-drive heroic-games-launcher-bin menulibre
 
 echo "Pacotes AUR instalados."
 

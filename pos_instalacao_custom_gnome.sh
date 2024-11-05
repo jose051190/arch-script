@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Criar as pastas em /mnt
-sudo mkdir -p /mnt/Dados-NTFS /mnt/Dados-Btrfs /mnt/OneDrive /mnt/Windows /mnt/Backup /mnt/Nextcloud
+sudo mkdir -p /mnt/Dados-NTFS /mnt/Dados-Btrfs /mnt/Servidor /mnt/Windows /mnt/Backup
 
 # Ajustar permissões e dono das pastas
-sudo chmod +x /mnt/Dados-NTFS /mnt/Dados-Btrfs /mnt/OneDrive /mnt/Windows /mnt/Backup /mnt/Nextcloud
-sudo chown jose:jose /mnt/Dados-NTFS /mnt/Dados-Btrfs /mnt/OneDrive /mnt/Windows /mnt/Backup /mnt/Nextcloud
+sudo chmod +x /mnt/Dados-NTFS /mnt/Dados-Btrfs /mnt/Servidor /mnt/Windows /mnt/Backup
+sudo chown jose:jose /mnt/Dados-NTFS /mnt/Dados-Btrfs /mnt/Servidor /mnt/Windows /mnt/Backup
 
 echo "Pastas criadas e permissões ajustadas."
 

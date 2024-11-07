@@ -10,7 +10,7 @@ sudo chown jose:jose /mnt/Dados-NTFS /mnt/Dados-Btrfs /mnt/Servidor /mnt/Windows
 echo "Pastas criadas e permissões ajustadas."
 
 # Instalar os pacotes do repositório oficial
-sudo pacman -S --needed steam lutris wine-staging inter-font ttf-jetbrains-mono rsync ncdu ttf-inconsolata syncthing zram-generator npn docker docker-compose flatpak mangohud vorta goverlay cronie calibre wl-clipboard pacman-contrib pacutils expac less ttf-font-awesome obsidian adw-gtk-theme
+sudo pacman -S --needed steam lutris wine-staging inter-font ttf-jetbrains-mono rsync ncdu ttf-inconsolata syncthing zram-generator npm docker docker-compose flatpak mangohud vorta goverlay cronie calibre wl-clipboard pacman-contrib pacutils expac less ttf-font-awesome obsidian adw-gtk-theme
 # Salvar senha nextcloud
 # sudo nano /etc/pam.d/login
 #%PAM-1.0

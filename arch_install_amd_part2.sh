@@ -54,7 +54,7 @@ grep -q '^ParallelDownloads = 5' /etc/pacman.conf && sed -i '/^ParallelDownloads
 check_command "adicionar ILoveCandy"
 pacman -Syu
 check_command "pacman -Syu"
-pacman -S --needed grub efibootmgr dialog os-prober ntfs-3g mtools dosfstools linux-headers bluez bluez-utils bluez-plugins git xdg-utils xdg-user-dirs wget curl pipewire lib32-pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber sof-firmware btrfs-progs
+pacman -S --needed grub efibootmgr dialog os-prober ntfs-3g mtools dosfstools linux-headers bluez bluez-utils bluez-plugins git xdg-utils xdg-user-dirs wget curl gst-plugins-good pipewire lib32-pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber sof-firmware btrfs-progs
 check_command "pacman -S pacotes essenciais"
 
 # Habilitar serviços

@@ -21,7 +21,7 @@ pacotes_pacman=(
     ttf-jetbrains-mono ttf-nerd-fonts-symbols ttf-roboto-mono-nerd virt-manager
     vulkan-icd-loader vulkan-mesa-layers vulkan-radeon wget wireplumber wl-clipboard
     xdg-desktop-portal-gnome xdg-user-dirs xdg-user-dirs-gtk xdg-utils xorg-xwayland
-    zram-generator
+    zram-generator power-profiles-daemon
 )
 
 # Instala pacotes Pacman que não estão instalados

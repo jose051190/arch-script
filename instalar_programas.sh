@@ -105,6 +105,9 @@ sudo swapon /swapfile
 # Recarregar o systemd
 sudo systemctl daemon-reload
 
+# Iniciar e habilitar serviços do GDM
+sudo systemctl enable gdm
+
 # Iniciar e habilitar serviços do Docker
 sudo systemctl enable docker.socket
 sudo systemctl enable docker.service

@@ -34,31 +34,29 @@ if [ -z "$disco" ]; then
 fi
 disco="/dev/$disco"
 
-# Particionar o disco
-echo "Deseja particionar o disco $disco manualmente? (s/n): "
-read particionar_manualmente
-if [ "$particionar_manualmente" == "s" ]; then
-  echo "Particione o disco $disco usando cfdisk. Depois de particionado, pressione qualquer tecla para continuar..."
-  cfdisk $disco
-  read -n 1 -s
-fi
+# Criar tabela de partição MBR e particionar
+echo "Criando tabela de partição MBR no disco $disco..."
+parted $disco mklabel msdos
 
-# Listar as partições disponíveis
-echo "Partições disponíveis:"
-lsblk
+echo "Criando partição raiz com alinhamento de 1 MiB..."
+parted $disco mkpart primary ext4 1MiB 100%
 
-# Pedir para o usuário informar a partição raiz
+# Exibir partições criadas
+echo "Partições criadas:"
+parted $disco print
+
+# Pedir para o usuário confirmar a partição raiz
 echo "Digite a partição raiz (e.g., /dev/sda1): "
 read particao_raiz
 
 # Verificar se a partição existe
 if [ ! -b "$particao_raiz" ]; then
-    echo "Partição raiz inválida: $particao_raiz"
-    exit 1
+  echo "Partição raiz inválida: $particao_raiz"
+  exit 1
 fi
 
 # Formatar a partição raiz
-echo "Formatando partição raiz com Ext4..."
+echo "Formatando a partição raiz com Ext4..."
 mkfs.ext4 $particao_raiz
 if [ $? -ne 0 ]; then
   echo "Erro ao formatar a partição raiz"
@@ -75,17 +73,9 @@ fi
 
 # Instalar os pacotes essenciais
 echo "Instalando pacotes essenciais..."
-pacstrap -K /mnt base linux linux-firmware nano base-devel intel-ucode networkmanager network-manager-applet bash-completion linux-headers
+pacstrap -K /mnt base linux linux-firmware nano base-devel intel-ucode networkmanager network-manager-applet bash-completion linux-headers grub
 if [ $? -ne 0 ]; then
   echo "Erro ao instalar pacotes essenciais"
-  exit 1
-fi
-
-# Copiar scripts para o ambiente chroot
-echo "Copiando scripts para o ambiente chroot..."
-cp arch_netbook_part2.sh /mnt/
-if [ $? -ne 0 ]; then
-  echo "Erro ao copiar scripts para o ambiente chroot"
   exit 1
 fi
 
@@ -97,13 +87,35 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Entrar no ambiente chroot e executar a próxima parte da instalação
-echo "Entrando no ambiente chroot..."
-arch-chroot /mnt /bin/bash /arch_netbook_part2.sh
+# Configurar o GRUB
+echo "Configurando o GRUB..."
+arch-chroot /mnt /bin/bash <<EOF
+grub-install --target=i386-pc $disco
 if [ $? -ne 0 ]; then
-  echo "Erro ao entrar no ambiente chroot"
+  echo "Erro ao instalar o GRUB"
   exit 1
 fi
 
-echo "Instalação inicial concluída com sucesso!"
+grub-mkconfig -o /boot/grub/grub.cfg
+if [ $? -ne 0 ]; then
+  echo "Erro ao gerar o arquivo de configuração do GRUB"
+  exit 1
+fi
+EOF
 
+# Copiar o segundo script para o ambiente chroot
+echo "Copiando o segundo script para o ambiente chroot..."
+cp arch_netbook_part2.sh /mnt/
+
+# Tornar o script executável dentro do ambiente chroot
+chmod +x /mnt/arch_netbook_part2.sh
+
+# Invocar o segundo script dentro do ambiente chroot
+echo "Executando o segundo script no ambiente chroot..."
+arch-chroot /mnt /bin/bash /arch_netbook_part2.sh
+
+# Remover o script do ambiente chroot após execução
+rm /mnt/arch_netbook_part2.sh
+
+# Finalização
+echo "Configuração completa! Você pode reiniciar o sistema."

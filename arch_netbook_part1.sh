@@ -83,7 +83,7 @@ fi
 
 # Copiar scripts para o ambiente chroot
 echo "Copiando scripts para o ambiente chroot..."
-cp arch_netbook_part2.sh arch_netbook_part3.sh /mnt/
+cp arch_netbook_part2.sh /mnt/
 if [ $? -ne 0 ]; then
   echo "Erro ao copiar scripts para o ambiente chroot"
   exit 1

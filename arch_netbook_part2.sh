@@ -32,17 +32,13 @@ cat <<EOL > /etc/hosts
 EOL
 check_command "criação de /etc/hosts"
 
-# Configurar initramfs e senha do root
+# Configurar initramfs
 mkinitcpio -P
 check_command "mkinitcpio -P"
 
-echo "Defina a senha do root:"
-passwd
-check_command "passwd"
-
 # Habilitar multilib e configurações do pacman
-sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf
-check_command "sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
+sed -i '/multilib/,/Include/ s/^#//' /etc/pacman.conf
+check_command "sed -i '/multilib/,/Include/ s/^#//' /etc/pacman.conf"
 sed -i 's/^#Color/Color/' /etc/pacman.conf
 check_command "sed -i 's/^#Color/Color/' /etc/pacman.conf"
 sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
@@ -54,13 +50,9 @@ check_command "adicionar ILoveCandy"
 pacman -Syu
 check_command "pacman -Syu"
 
-# Instalar pacotes essenciais
-pacman -S --needed grub dialog ntfs-3g mtools dosfstools linux-headers git xdg-utils xdg-user-dirs wget curl gst-plugins-good pipewire lib32-pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber sof-firmware
-check_command "pacman -S pacotes essenciais"
-
 # Instalar pacotes adicionais
 echo "Instalando pacotes adicionais..."
-pacman -S --needed chromium ristretto mpv vlc galculator xarchive clipit leafpad
+pacman -S --needed chromium ristretto mpv vlc galculator leafpad
 check_command "pacman -S pacotes adicionais"
 
 # Instalar pacotes do LXDE
@@ -103,16 +95,6 @@ echo "Defina a senha do usuário jose:"
 passwd jose
 check_command "passwd jose"
 
-# Configurar GRUB para BIOS
-grub-install --target=i386-pc /dev/sda
-check_command "grub-install --target=i386-pc /dev/sda"
-sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
-check_command "sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub"
-
-# Atualizar o GRUB
-grub-mkconfig -o /boot/grub/grub.cfg
-check_command "grub-mkconfig -o /boot/grub/grub.cfg"
-
-# Finalizar instalação
-echo "Configuração concluída! Saia do chroot e reinicie o sistema."
+# Finalizar configuração
+echo "Configuração concluída! O sistema está pronto para uso."
 exit

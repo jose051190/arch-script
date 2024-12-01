@@ -59,7 +59,7 @@ check_command "pacman -S pacotes adicionais"
 
 # Instalar pacotes do Openbox
 echo "Instalando pacotes do Openbox..."
-pacman -S --needed openbox tint2 obconf lxappearance lxappearance-obconf pcmanfm xarchiver unrar rar
+pacman -S --needed openbox tint2 obconf lxappearance lxappearance-obconf pcmanfm xarchiver unrar rar xdg-utils xdg-user-dirs
 check_command "pacman -S pacotes do Openbox"
 
 # Habilitar NetworkManager
@@ -86,6 +86,11 @@ echo "Defina a senha do usuário jose:"
 passwd jose
 check_command "passwd jose"
 
+# Configurar senha do root
+echo "Defina a senha do usuário root:"
+passwd
+check_command "passwd"
+
 # Criar arquivo de swap
 echo "Criando arquivo de swap de 2GB..."
 fallocate -l 2G /mnt/swapfile
@@ -93,6 +98,9 @@ chmod 600 /mnt/swapfile
 mkswap /mnt/swapfile
 swapon /mnt/swapfile
 echo '/swapfile none swap defaults 0 0' >> /mnt/etc/fstab
+
+# Ajustar Hora
+systemctl enable systemd-timesyncd.service
 
 # Finalizar configuração
 echo "Configuração concluída! O sistema está pronto para uso."

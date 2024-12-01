@@ -59,8 +59,24 @@ check_command "pacman -S pacotes adicionais"
 
 # Instalar pacotes do Openbox
 echo "Instalando pacotes do Openbox..."
-pacman -S --needed openbox tint2 obconf lxappearance lxappearance-obconf pcmanfm xarchiver unrar rar xdg-utils xdg-user-dirs
+pacman -S --needed openbox tint2 obconf lxappearance lxappearance-obconf pcmanfm xarchiver unrar rar xdg-utils xdg-user-dirs plymouth
 check_command "pacman -S pacotes do Openbox"
+
+# Configurar GRUB para Plymouth
+sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/&splash rd.udev.log_priority=3 vt.global_cursor_default=0 /' /etc/default/grub
+check_command "sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=\"/&splash rd.udev.log_priority=3 vt.global_cursor_default=0 /' /etc/default/grub"
+
+# Atualizar GRUB
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+check_command "sudo grub-mkconfig -o /boot/grub/grub.cfg"
+
+# Adicionar plymouth ao vetor HOOKS em mkinitcpio.conf após base e udev
+sudo sed -i '/^HOOKS=/ s/\(base udev\)/\1 plymouth/' /etc/mkinitcpio.conf
+check_command "sudo sed -i '/^HOOKS=/ s/\(base udev\)/\1 plymouth/' /etc/mkinitcpio.conf"
+
+# Atualizar mkinitcpio
+sudo mkinitcpio -p linux
+check_command "sudo mkinitcpio -p linux"
 
 # Habilitar NetworkManager
 systemctl enable NetworkManager

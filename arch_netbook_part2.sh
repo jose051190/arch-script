@@ -37,8 +37,8 @@ mkinitcpio -P
 check_command "mkinitcpio -P"
 
 # Habilitar multilib e configurações do pacman
-sed -i '/multilib/,/Include/ s/^#//' /etc/pacman.conf
-check_command "sed -i '/multilib/,/Include/ s/^#//' /etc/pacman.conf"
+sed -i '/^multilib/,/^Include/ s/^#//' /etc/pacman.conf
+check_command "sed -i '/^multilib/,/^Include/ s/^#//' /etc/pacman.conf"
 sed -i 's/^#Color/Color/' /etc/pacman.conf
 check_command "sed -i 's/^#Color/Color/' /etc/pacman.conf"
 sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
@@ -55,19 +55,10 @@ echo "Instalando pacotes adicionais..."
 pacman -S --needed chromium ristretto mpv vlc galculator leafpad
 check_command "pacman -S pacotes adicionais"
 
-# Instalar pacotes do LXDE
-echo "Instalando pacotes do LXDE..."
-pacman -S --needed lxde-common lxsession openbox pcmanfm lxappearance lxterminal lxpanel xarchiver
-check_command "pacman -S pacotes do LXDE"
-
-# Instalar LXDM (gerenciador de login)
-echo "Instalando o LXDM..."
-pacman -S --needed lxdm
-check_command "pacman -S lxdm"
-
-# Habilitar LXDM para iniciar automaticamente
-systemctl enable lxdm
-check_command "systemctl enable lxdm"
+# Instalar pacotes do Openbox
+echo "Instalando pacotes do Openbox..."
+pacman -S --needed openbox tint2 obconf obmenu lxappearance lxappearance-obconf pcmanfm xarchiver
+check_command "pacman -S pacotes do Openbox"
 
 # Habilitar NetworkManager
 systemctl enable NetworkManager
@@ -87,6 +78,13 @@ else
     pacman -S --needed mesa lib32-mesa xf86-video-intel xorg-server
     check_command "pacman -S drivers Intel antigos"
 fi
+
+# Configurar Openbox com startx
+echo "Configurando Openbox para iniciar com startx..."
+echo "exec openbox-session" > /home/jose/.xinitrc
+check_command "echo 'exec openbox-session' > /home/jose/.xinitrc"
+chown jose:jose /home/jose/.xinitrc
+check_command "chown jose:jose /home/jose/.xinitrc"
 
 # Criar usuário
 useradd -mG wheel jose

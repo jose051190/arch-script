@@ -95,6 +95,14 @@ echo "Defina a senha do usuário jose:"
 passwd jose
 check_command "passwd jose"
 
+# Criar arquivo de swap
+echo "Criando arquivo de swap de 2GB..."
+fallocate -l 2G /mnt/swapfile
+chmod 600 /mnt/swapfile
+mkswap /mnt/swapfile
+swapon /mnt/swapfile
+echo '/swapfile none swap defaults 0 0' >> /mnt/etc/fstab
+
 # Finalizar configuração
 echo "Configuração concluída! O sistema está pronto para uso."
 exit

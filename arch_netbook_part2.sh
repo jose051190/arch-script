@@ -59,7 +59,7 @@ check_command "pacman -S pacotes adicionais"
 
 # Instalar pacotes do Openbox
 echo "Instalando pacotes do Openbox..."
-pacman -S --needed openbox tint2 obconf obmenu lxappearance lxappearance-obconf pcmanfm xarchiver
+pacman -S --needed openbox tint2 obconf lxappearance lxappearance-obconf pcmanfm xarchiver unrar rar
 check_command "pacman -S pacotes do Openbox"
 
 # Habilitar NetworkManager
@@ -67,19 +67,10 @@ systemctl enable NetworkManager
 check_command "systemctl enable NetworkManager"
 
 # Configuração de drivers Intel
-echo "Detectando o tipo de GPU Intel..."
-echo "Você está usando um hardware Intel moderno (Broadwell ou mais recente)? [s/n]"
-read intel_moderno
 
-if [ "$intel_moderno" == "s" ]; then
-    echo "Instalando drivers para GPUs Intel modernas..."
-    pacman -S --needed mesa vulkan-intel lib32-mesa lib32-vulkan-intel intel-media-driver xorg-server
-    check_command "pacman -S drivers Intel modernos"
-else
-    echo "Instalando drivers para GPUs Intel antigas..."
-    pacman -S --needed mesa lib32-mesa xf86-video-intel xorg-server
-    check_command "pacman -S drivers Intel antigos"
-fi
+echo "Instalando drivers para GPUs Intel antigas..."
+pacman -S --needed mesa lib32-mesa xf86-video-intel xorg-server
+check_command "pacman -S drivers Intel antigos"
 
 # Configurar Openbox com startx
 echo "Configurando Openbox para iniciar com startx..."

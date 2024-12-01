@@ -59,7 +59,7 @@ check_command "pacman -S pacotes adicionais"
 
 # Instalar pacotes do Openbox
 echo "Instalando pacotes do Openbox..."
-pacman -S --needed openbox tint2 obconf lxappearance lxappearance-obconf pcmanfm xarchiver unrar rar xdg-utils xdg-user-dirs plymouth
+pacman -S --needed openbox tint2 obconf lxappearance lxappearance-obconf pcmanfm xarchiver unrar xdg-utils xdg-user-dirs plymouth
 check_command "pacman -S pacotes do Openbox"
 
 # Configurar GRUB para Plymouth

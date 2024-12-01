@@ -36,9 +36,11 @@ check_command "criação de /etc/hosts"
 mkinitcpio -P
 check_command "mkinitcpio -P"
 
-# Habilitar multilib e configurações do pacman
-sed -i '/^multilib/,/^Include/ s/^#//' /etc/pacman.conf
-check_command "sed -i '/^multilib/,/^Include/ s/^#//' /etc/pacman.conf"
+# Habilitar multilib e outras configurações do pacman
+sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf
+check_command "sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
+
+# Descomentar configurações no pacman.conf e adicionar ILoveCandy
 sed -i 's/^#Color/Color/' /etc/pacman.conf
 check_command "sed -i 's/^#Color/Color/' /etc/pacman.conf"
 sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf

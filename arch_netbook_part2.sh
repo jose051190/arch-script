@@ -40,6 +40,10 @@ check_command "mkinitcpio -P"
 sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf
 check_command "sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
 
+echo "Defina a senha do root:"
+passwd
+check_command "passwd"
+
 # Descomentar configurações no pacman.conf e adicionar ILoveCandy
 sed -i 's/^#Color/Color/' /etc/pacman.conf
 check_command "sed -i 's/^#Color/Color/' /etc/pacman.conf"
@@ -88,13 +92,6 @@ echo "Instalando drivers para GPUs Intel antigas..."
 pacman -S --needed mesa lib32-mesa xf86-video-intel xorg-server
 check_command "pacman -S drivers Intel antigos"
 
-# Configurar Openbox com startx
-echo "Configurando Openbox para iniciar com startx..."
-echo "exec openbox-session" > /home/jose/.xinitrc
-check_command "echo 'exec openbox-session' > /home/jose/.xinitrc"
-chown jose:jose /home/jose/.xinitrc
-check_command "chown jose:jose /home/jose/.xinitrc"
-
 # Criar usuário
 useradd -mG wheel jose
 check_command "useradd -mG wheel jose"
@@ -102,18 +99,20 @@ echo "Defina a senha do usuário jose:"
 passwd jose
 check_command "passwd jose"
 
-# Configurar senha do root
-echo "Defina a senha do usuário root:"
-passwd
-check_command "passwd"
+# Configurar Openbox com startx
+echo "Configurando Openbox para iniciar com startx..."
+echo "exec openbox-session" > /home/jose/.xinitrc
+check_command "echo 'exec openbox-session' > /home/jose/.xinitrc"
+chown jose:jose /home/jose/.xinitrc
+check_command "chown jose:jose /home/jose/.xinitrc"
 
 # Criar arquivo de swap
 echo "Criando arquivo de swap de 2GB..."
-fallocate -l 2G /mnt/swapfile
-chmod 600 /mnt/swapfile
-mkswap /mnt/swapfile
-swapon /mnt/swapfile
-echo '/swapfile none swap defaults 0 0' >> /mnt/etc/fstab
+fallocate -l 2G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo '/swapfile none swap defaults 0 0' >> /etc/fstab
 
 # Ajustar Hora
 systemctl enable systemd-timesyncd.service

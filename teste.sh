@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ----------------------------------------------------------
-# Script   : install_netbook.sh
-# Descrição: Script interativo para instalação e configuração do Arch Linux para netbooks
+# Script   : install_arch.sh
+# Descrição: Script interativo para instalação e configuração do Arch Linux
 # Autor    : Seu Nome
 # ----------------------------------------------------------
 
@@ -240,97 +240,22 @@ instalar_pacotes() {
 
     # Configurar locale
     sed -i 's/^#pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen
-    check_command "Descomentar pt_BR.UTF-8 no locale.gen"
+    check_command "Descomentar pt_BR.UTF-8 no /etc/locale.gen"
     locale-gen
     check_command "Gerar locale"
     echo "LANG=pt_BR.UTF-8" > /etc/locale.conf
-    check_command "Configurar LANG no locale.conf"
+    check_command "Configurar locale"
 
-    # Habilitar NetworkManager
-    systemctl enable NetworkManager
-    check_command "Habilitar NetworkManager"
+    # Instalar pacotes essenciais
+    echo "Instalando pacotes essenciais..."
+    pacstrap /mnt base linux linux-firmware vim sudo networkmanager
+    check_command "Instalar pacotes essenciais"
 
-    # Configurar initramfs
-    mkinitcpio -P
-    check_command "Gerar initramfs"
-
-    # Habilitar multilib no pacman.conf
-    sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf
-    check_command "Habilitar multilib no pacman.conf"
-
-    # Adicionar ILoveCandy no pacman.conf
-    sed -i 's/^#Color/Color/' /etc/pacman.conf
-    check_command "Descomentar Color no pacman.conf"
-    sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
-    check_command "Descomentar VerbosePkgLists no pacman.conf"
-    sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
-    check_command "Descomentar ParallelDownloads no pacman.conf"
-    grep -q '^ParallelDownloads = 5' /etc/pacman.conf && sed -i '/^ParallelDownloads = 5/a ILoveCandy' /etc/pacman.conf || echo -e '\nParallelDownloads = 5\nILoveCandy' >> /etc/pacman.conf
-    check_command "Adicionar ILoveCandy no pacman.conf"
-
-    # Atualizar pacman
-    pacman -Syu --noconfirm
-    check_command "Atualizar pacman"
-
-    # Instalar pacotes adicionais
-    echo "Instalando pacotes adicionais..."
-    pacman -S --needed --noconfirm chromium ristretto mpv vlc galculator leafpad
-    check_command "Instalar pacotes adicionais"
-
-    # Instalar pacotes do ambiente gráfico selecionado
+    # Instalar ambiente gráfico
     if [[ -n "$graphics_env" ]]; then
-        echo "Instalando ambiente gráfico selecionado..."
-        pacman -S --needed --noconfirm $graphics_env
-        check_command "Instalar ambiente gráfico $graphics_env"
-
-        # Configurar display manager
-        case $graphics_env in
-            *lightdm*)
-                systemctl enable lightdm
-                check_command "Habilitar LightDM"
-                ;;
-            *sddm*)
-                systemctl enable sddm
-                check_command "Habilitar SDDM"
-                ;;
-            *gdm*)
-                systemctl enable gdm
-                check_command "Habilitar GDM"
-                ;;
-            *)
-                # Para Openbox, iniciar com startx
-                echo "exec openbox-session" > /home/$user/.xinitrc
-                check_command "Configurar .xinitrc para Openbox"
-                chown $user:$user /home/$user/.xinitrc
-                check_command "Alterar propriedade de .xinitrc para o usuário $user"
-                ;;
-        esac
-    else
-        echo "Nenhum ambiente gráfico selecionado."
-    fi
-
-    # Configurar GRUB para Plymouth (se necessário)
-    if [[ "$graphics_env" == *plymouth* ]]; then
-        echo "Configurando GRUB para Plymouth..."
-        sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/&splash rd.udev.log_priority=3 vt.global_cursor_default=0 /' /etc/default/grub
-        check_command "Configurar GRUB para Plymouth"
-
-        grub-mkconfig -o /boot/grub/grub.cfg
-        check_command "Gerar configuração do GRUB"
-
-        # Adicionar plymouth aos HOOKS no mkinitcpio.conf
-        sed -i '/^HOOKS=/ s/\(base udev\)/\1 plymouth/' /etc/mkinitcpio.conf
-        check_command "Adicionar plymouth aos HOOKS do mkinitcpio.conf"
-
-        mkinitcpio -P
-        check_command "Atualizar mkinitcpio"
-    fi
-
-    # Instalar drivers Intel (se necessário)
-    if [[ "$graphics_env" == *openbox* ]]; then
-        echo "Instalando drivers para GPUs Intel antigas..."
-        pacman -S --needed --noconfirm mesa lib32-mesa xf86-video-intel xorg-server
-        check_command "Instalar drivers Intel antigos"
+        echo "Instalando ambiente gráfico..."
+        pacstrap /mnt $graphics_env
+        check_command "Instalar ambiente gráfico"
     fi
 
     echo "Pacotes instalados com sucesso!"
@@ -338,32 +263,52 @@ instalar_pacotes() {
     menu_principal
 }
 
-# Função para finalizar a instalação e reiniciar
+# Função para finalizar instalação e reiniciar
 finalizar_instalacao() {
     clear
     echo "----------------------------------------------------------"
-    echo " FINALIZANDO INSTALAÇÃO E PREPARANDO PARA REINICIAR"
+    echo " FINALIZANDO INSTALAÇÃO E REINICIANDO"
     echo "----------------------------------------------------------"
-    
-    # Habilitar serviços essenciais
-    systemctl enable systemd-timesyncd.service
-    check_command "Habilitar systemd-timesyncd.service"
 
-    # Finalizar chroot e desmontar
-    echo "Desmontando partições..."
-    umount -R /mnt
-    check_command "Desmontar /mnt"
+    # Gerar fstab
+    genfstab -U /mnt >> /mnt/etc/fstab
+    check_command "Gerar fstab"
 
-    echo "Instalação concluída! Reiniciando o sistema..."
+    # Chroot para configuração final
+    arch-chroot /mnt
+
+    # Instalar e configurar GRUB
+    if [ "$bios_or_uefi" == "bios" ]; then
+        echo "Instalando GRUB para BIOS..."
+        pacman -S grub os-prober
+        check_command "Instalar GRUB"
+        grub-install --target=i386-pc /dev/sda
+        check_command "Instalar GRUB na BIOS"
+        grub-mkconfig -o /boot/grub/grub.cfg
+        check_command "Gerar configuração do GRUB"
+    else
+        echo "Instalando GRUB para UEFI..."
+        pacman -S grub efibootmgr
+        check_command "Instalar GRUB"
+        grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=grub
+        check_command "Instalar GRUB no UEFI"
+        grub-mkconfig -o /boot/grub/grub.cfg
+        check_command "Gerar configuração do GRUB"
+    fi
+
+    # Finalização
+    echo "Instalação concluída com sucesso!"
+    echo "Reinicie o sistema e remova o mídia de instalação."
+    sleep 2
     reboot
 }
 
-# Função para sair do script
+# Função para sair
 sair() {
-    echo "Saindo do script de instalação. Até logo!"
+    clear
+    echo "Saindo do script."
     exit 0
 }
 
-# Iniciar o script
+# Iniciar o menu principal
 menu_principal
-

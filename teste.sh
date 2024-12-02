@@ -126,15 +126,6 @@ configurar_disco() {
     mount $particao_raiz /mnt
     check_command "Montar partição raiz"
 
-    # Criar arquivo de swap
-    echo "Criando arquivo de swap de $swap_size..."
-    fallocate -l $swap_size /mnt/swapfile
-    chmod 600 /mnt/swapfile
-    mkswap /mnt/swapfile
-    swapon /mnt/swapfile
-    echo '/swapfile none swap defaults 0 0' >> /mnt/etc/fstab
-    check_command "Criar e configurar swap"
-
     echo "Configuração do disco concluída!"
     sleep 2
     menu_principal

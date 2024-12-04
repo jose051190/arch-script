@@ -89,7 +89,7 @@ passwd jose
 check_command "passwd jose"
 
 # Permissões sudo
-acho "jose ALL=(ALL) ALL" >> /etc/sudoers.d/jose
+echo "jose ALL=(ALL) ALL" >> /etc/sudoers.d/jose
 
 # Finalizar instalação
 exit

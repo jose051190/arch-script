@@ -88,5 +88,8 @@ echo "Defina a senha do usuário jose:"
 passwd jose
 check_command "passwd jose"
 
+# Permissões sudo
+acho "jose ALL=(ALL) ALL" >> /etc/sudoers.d/jose
+
 # Finalizar instalação
 exit

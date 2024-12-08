@@ -92,6 +92,27 @@ sudo swapon /swapfile
 # Recarregar o systemd
 sudo systemctl daemon-reload
 
+# Configuração do sysctl para parâmetros Zram
+sudo bash -c 'cat > /etc/sysctl.d/99-vm-zram-parameters.conf <<EOF
+vm.swappiness = 180
+vm.watermark_boost_factor = 0
+vm.watermark_scale_factor = 125
+vm.page-cluster = 0
+EOF'
+
+# Aplicar as novas configurações sysctl
+sudo sysctl --system
+
+echo "Configuração do Zram finalizada."
+
+# Reiniciar o serviço systemd-binfmt
+sudo systemctl restart systemd-binfmt
+
+
+# Ajustar Hora
+sudo systemctl enable systemd-timesyncd.service
+sudo systemctl start systemd-timesyncd.service
+
 # Perguntar ao usuário se deseja reiniciar
 echo "Instalação concluída. Deseja reiniciar o sistema agora? (s/n)"
 read resposta

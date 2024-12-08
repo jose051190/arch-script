@@ -73,6 +73,25 @@ cd yay
 makepkg -si --noconfirm
 check_command "makepkg -si"
 
+
+# Criar o arquivo de configuração do Zram
+sudo bash -c 'cat > /etc/systemd/zram-generator.conf <<EOF
+[zram0]
+zram-size = ram
+compression-algorithm = zstd
+EOF'
+
+# Criar arquivo de swapfile
+sudo touch /swapfile
+sudo chattr +C /swapfile  # Desativa o COW
+sudo fallocate -l 1G /swapfile  # Cria o arquivo de 1 GB
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+# Recarregar o systemd
+sudo systemctl daemon-reload
+
 # Perguntar ao usuário se deseja reiniciar
 echo "Instalação concluída. Deseja reiniciar o sistema agora? (s/n)"
 read resposta

@@ -113,8 +113,9 @@ sudo systemctl restart systemd-binfmt
 sudo systemctl enable systemd-timesyncd.service
 sudo systemctl start systemd-timesyncd.service
 
-# Aplicativos nativefier
-npm install -g nativefier
+# Adicionar usuário aos grupos Docker e Libvirt
+sudo usermod -aG docker $USER
+sudo usermod -aG libvirt $USER
 
 # Perguntar ao usuário se deseja reiniciar
 echo "Instalação concluída. Deseja reiniciar o sistema agora? (s/n)"

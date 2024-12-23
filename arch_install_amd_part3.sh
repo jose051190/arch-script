@@ -65,6 +65,10 @@ sudo systemctl enable syncthing@jose.service
 # Iniciar o serviço cronie
 sudo systemctl enable cronie.service
 
+# Iniciar e habilitar serviços do Docker
+sudo systemctl enable docker.socket
+sudo systemctl enable docker.service
+
 # Instalar yay
 cd /tmp/
 git clone https://aur.archlinux.org/yay.git

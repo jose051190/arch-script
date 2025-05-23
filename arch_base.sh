@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # ===============================
 # VARIÁVEIS
@@ -27,19 +28,10 @@ RESET="\033[0m"
 # ===============================
 # FUNÇÃO DE MENSAGEM
 # ===============================
-msg() {
-  echo -e "${BLUE}==>${RESET} $1"
-}
-success() {
-  echo -e "${GREEN}✓${RESET} $1"
-}
-warn() {
-  echo -e "${YELLOW}!${RESET} $1"
-}
-error() {
-  echo -e "${RED}✗${RESET} $1" >&2
-  exit 1
-}
+msg() { echo -e "${BLUE}==>${RESET} $1"; }
+success() { echo -e "${GREEN}✓${RESET} $1"; }
+warn() { echo -e "${YELLOW}!${RESET} $1"; }
+error() { echo -e "${RED}✗${RESET} $1" >&2; exit 1; }
 
 # ===============================
 # VERIFICAR ROOT
@@ -67,20 +59,20 @@ msg "Discos disponíveis:"
 lsblk -d -o NAME,SIZE,MODEL | grep -vE "loop|sr0|zram" | nl -w1 -s") "
 
 read -p "Digite o número do disco para instalar o sistema: " num_disco
-DISCO=$(lsblk -d -o NAME | grep -vE "loop|sr0|zram" | awk "NR==$((num_disco + 1))")
+DISCO=$(lsblk -d -n -o NAME | grep -vE "loop|sr0|zram" | sed -n "${num_disco}p")
 [[ -z "$DISCO" ]] && error "Disco inválido!"
 
 DISCO="/dev/$DISCO"
 
 warn "Todos os dados em $DISCO serão apagados!"
-read -p "Deseja continuar e formatar automaticamente? (s/n): " confirm
+read -n1 -r -p "Deseja continuar e formatar automaticamente? (s/n): " confirm
+echo
 [[ "$confirm" != "s" ]] && error "Operação cancelada."
 
 # ===============================
 # PARTICIONAMENTO AUTOMÁTICO
 # ===============================
 msg "Particionando disco: $DISCO"
-
 parted -s "$DISCO" mklabel gpt
 parted -s "$DISCO" mkpart ESP fat32 1MiB 1025MiB
 parted -s "$DISCO" set 1 esp on
@@ -95,12 +87,13 @@ particao_raiz="${DISCO}2"
 msg "Formatando partições..."
 mkfs.fat -F32 "$particao_boot" || error "Erro ao formatar boot"
 wipefs -a "$particao_raiz"
-mkfs.btrfs "$particao_raiz" || error "Erro ao formatar raiz"
+mkfs.btrfs -f "$particao_raiz" || error "Erro ao formatar raiz"
 
 # ===============================
 # CRIAR SUBVOLUMES BTRFS
 # ===============================
 msg "Criando subvolumes..."
+mkdir -p "$MOUNT_DIR"
 mount "$particao_raiz" "$MOUNT_DIR"
 btrfs subvolume create "$MOUNT_DIR/@root"
 btrfs subvolume create "$MOUNT_DIR/@home"
@@ -110,9 +103,9 @@ umount "$MOUNT_DIR"
 # MONTAR SISTEMA DE ARQUIVOS
 # ===============================
 msg "Montando sistema de arquivos..."
-mount -o $BTRFS_OPTS,subvol=@root "$particao_raiz" "$MOUNT_DIR"
+mount -o "$BTRFS_OPTS,subvol=@root" "$particao_raiz" "$MOUNT_DIR"
 mkdir -p "$MOUNT_DIR"/{home,boot/efi}
-mount -o $BTRFS_OPTS,subvol=@home "$particao_raiz" "$MOUNT_DIR/home"
+mount -o "$BTRFS_OPTS,subvol=@home" "$particao_raiz" "$MOUNT_DIR/home"
 mount "$particao_boot" "$BOOT_DIR"
 
 # ===============================
@@ -132,7 +125,8 @@ genfstab -U "$MOUNT_DIR" >> "$MOUNT_DIR/etc/fstab"
 # ===============================
 msg "Copiando scripts para o chroot..."
 for script in "${SCRIPTS[@]}"; do
-  cp "$script" "$MOUNT_DIR/" || error "Script $script não encontrado!"
+  [[ -f "$script" ]] || error "Script $script não encontrado!"
+  cp "$script" "$MOUNT_DIR/" || error "Erro ao copiar $script!"
 done
 
 msg "Entrando no chroot..."

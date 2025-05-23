@@ -90,6 +90,13 @@ EOF
 check_command "Criar /etc/hosts"
 
 # ------------------------------
+# Instalar pacotes essenciais
+# ------------------------------
+echo -e "${YELLOW}>> Instalando pacotes essenciais...${RESET}"
+pacman -S --needed --noconfirm "${ESSENTIAL_PACKAGES[@]}"
+check_command "Instalação de pacotes essenciais"
+
+# ------------------------------
 # Gerar initramfs
 # ------------------------------
 echo -e "${YELLOW}>> Gerando initramfs...${RESET}"

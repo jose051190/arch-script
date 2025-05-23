@@ -56,10 +56,10 @@ timedatectl set-ntp true
 # LISTAR DISCOS E SELECIONAR
 # ===============================
 msg "Discos disponíveis:"
-lsblk -d -o NAME,SIZE,MODEL | grep -vE "loop|sr0|zram" | nl -w1 -s") "
+lsblk -d -o NAME,SIZE,MODEL | grep -vE "loop|sr0|zram" | awk 'NR>1 {print NR-1 ") " $0}'
 
 read -p "Digite o número do disco para instalar o sistema: " num_disco
-DISCO=$(lsblk -d -n -o NAME | grep -vE "loop|sr0|zram" | sed -n "${num_disco}p")
+DISCO=$(lsblk -d -n -o NAME,SIZE,MODEL | grep -vE "loop|sr0|zram" | sed -n "${num_disco}p")
 [[ -z "$DISCO" ]] && error "Disco inválido!"
 
 DISCO="/dev/$DISCO"

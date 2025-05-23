@@ -10,8 +10,6 @@ LOCALE="pt_BR.UTF-8"
 
 # Pacotes essenciais (sem drivers)
 ESSENTIAL_PACKAGES=(
-  systemd-boot
-  linux-headers
   bluez bluez-utils bluez-plugins
   git wget curl dialog
   xdg-utils xdg-user-dirs

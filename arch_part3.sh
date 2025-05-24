@@ -36,15 +36,20 @@ CONFIGURAÇÃO DO PLYMOUTH COM GRUB
 
 -------------------------------------
 
-echo "Adicionando entrada do Plymouth ao systemd-boot" sudo sed -i "/^options/ s|$| splash loglevel=3 rd.udev.log_priority=3 vt.global_cursor_default=0 root=PARTUUID=$PARTUUID|" /boot/loader/entries/arch.conf check_command "Configuração do systemd-boot com Plymouth"
+sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/&splash rd.udev.log_priority=3 vt.global_cursor_default=0 /' /etc/default/grub
+check_command "sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=\"/&splash rd.udev.log_priority=3 vt.global_cursor_default=0 /' /etc/default/grub"
 
-Adicionar plymouth ao vetor HOOKS em mkinitcpio.conf após base e udev
+# Atualizar GRUB
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+check_command "sudo grub-mkconfig -o /boot/grub/grub.cfg"
 
-sudo sed -i '/^HOOKS=/ s//\1 plymouth/' /etc/mkinitcpio.conf check_command "Inserção do plymouth no HOOKS"
+# Adicionar plymouth ao vetor HOOKS em mkinitcpio.conf após base e udev
+sudo sed -i '/^HOOKS=/ s/\(base udev\)/\1 plymouth/' /etc/mkinitcpio.conf
+check_command "sudo sed -i '/^HOOKS=/ s/\(base udev\)/\1 plymouth/' /etc/mkinitcpio.conf"
 
-Atualizar mkinitcpio
-
-sudo mkinitcpio -P check_command "Atualização do mkinitcpio"
+# Atualizar mkinitcpio
+sudo mkinitcpio -p linux
+check_command "sudo mkinitcpio -p linux"
 
 -------------------------------------
 

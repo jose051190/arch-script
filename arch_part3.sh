@@ -32,7 +32,7 @@ sudo pacman -S --needed "${PACOTES_ESSENCIAIS[@]}" check_command "Instalação d
 
 -------------------------------------
 
-CONFIGURAÇÃO DO PLYMOUTH COM SYSTEMD-BOOT
+CONFIGURAÇÃO DO PLYMOUTH COM GRUB
 
 -------------------------------------
 

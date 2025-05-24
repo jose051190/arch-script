@@ -18,6 +18,7 @@ ESSENTIAL_PACKAGES=(
   pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber
   sof-firmware
   btrfs-progs
+  grub os-prober efibootmgr
 )
 
 # Pacotes de drivers AMD
@@ -55,10 +56,10 @@ check_command() {
 # ------------------------------
 echo -e "${YELLOW}>> Configurando o fuso horário...${RESET}"
 ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
-check_command "ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime"
+check_command "Configurar timezone"
 
 hwclock --systohc
-check_command "hwclock --systohc"
+check_command "Sincronizar hwclock"
 
 # ------------------------------
 # Configurar locale
@@ -68,10 +69,10 @@ sed -i "s/^#$LOCALE UTF-8/$LOCALE UTF-8/" /etc/locale.gen
 check_command "Ativar locale $LOCALE"
 
 locale-gen
-check_command "locale-gen"
+check_command "Gerar locale"
 
 echo "LANG=$LOCALE" > /etc/locale.conf
-check_command "Definir LANG=$LOCALE"
+check_command "Definir LANG"
 
 # ------------------------------
 # Configurar hostname e hosts
@@ -99,25 +100,23 @@ check_command "Instalação de pacotes essenciais"
 # ------------------------------
 echo -e "${YELLOW}>> Gerando initramfs...${RESET}"
 mkinitcpio -P
-check_command "mkinitcpio -P"
+check_command "Gerar initramfs"
 
 # ------------------------------
 # Definir senha root
 # ------------------------------
 echo -e "${YELLOW}>> Defina a senha do root:${RESET}"
 passwd
-check_command "passwd"
+check_command "Definir senha root"
 
 # ------------------------------
-# Configurar pacman.conf (multilib, cores, etc)
+# Configurar pacman.conf
 # ------------------------------
 echo -e "${YELLOW}>> Habilitando multilib e ajustes do pacman.conf...${RESET}"
-sed -i '/\[multilib\/,/Include/ s/^#//' /etc/pacman.conf
+sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf
 sed -i 's/^#Color/Color/' /etc/pacman.conf
 sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
 sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
-
-# Adiciona ILoveCandy só se ParallelDownloads = 5 existir
 grep -q '^ParallelDownloads = 5' /etc/pacman.conf && sed -i '/^ParallelDownloads = 5/a ILoveCandy' /etc/pacman.conf
 check_command "Configurações do pacman.conf"
 
@@ -126,68 +125,38 @@ check_command "Configurações do pacman.conf"
 # ------------------------------
 echo -e "${YELLOW}>> Atualizando sistema...${RESET}"
 pacman -Syu --noconfirm
-check_command "pacman -Syu"
+check_command "Atualização do sistema"
 
 # ------------------------------
-# Instalar pacotes essenciais
-# ------------------------------
-echo -e "${YELLOW}>> Instalando pacotes essenciais...${RESET}"
-pacman -S --needed --noconfirm "${ESSENTIAL_PACKAGES[@]}"
-check_command "Instalação de pacotes essenciais"
-
-# ------------------------------
-# Habilitar serviços bluetooth e NetworkManager
+# Habilitar serviços
 # ------------------------------
 echo -e "${YELLOW}>> Habilitando serviços bluetooth e NetworkManager...${RESET}"
 systemctl enable bluetooth.service
-check_command "bluetooth.service"
+check_command "Habilitar bluetooth.service"
 
 systemctl enable NetworkManager
-check_command "NetworkManager"
+check_command "Habilitar NetworkManager"
 
 # ------------------------------
-# Instalar systemd-boot e configurar bootloader
+# Instalar e configurar GRUB
 # ------------------------------
-echo -e "${YELLOW}>> Instalando systemd-boot...${RESET}"
-bootctl install
-check_command "bootctl install"
+echo -e "${YELLOW}>> Instalando e configurando GRUB...${RESET}"
 
-echo -e "${YELLOW}>> Criando entrada do systemd-boot...${RESET}"
-
-# -------------------------------------
-# DEFINIR A PARTIÇÃO RAIZ
-# -------------------------------------
-
-# Listar os discos e partições montadas para ajudar o usuário a identificar a partição raiz
-echo "Partições disponíveis:"
-lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT,UUID,PARTUUID
-
-# Solicitar ao usuário que informe o caminho da partição raiz (ex: /dev/sda2)
-read -p "Digite o caminho da partição raiz (ex: /dev/sda2): " ROOT_PARTITION
-
-# Obter o PARTUUID da partição raiz informada
-PARTUUID=$(blkid -s PARTUUID -o value "$ROOT_PARTITION")
-
-# Verificar se o PARTUUID foi obtido com sucesso
-if [ -z "$PARTUUID" ]; then
-  echo "Não foi possível obter o PARTUUID. Verifique se o dispositivo está correto."
-  exit 1
+# Detectar se o sistema é EFI
+if [ -d /sys/firmware/efi ]; then
+  echo -e "${YELLOW}Sistema EFI detectado. Instalando GRUB para EFI...${RESET}"
+  grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+else
+  echo -e "${YELLOW}Sistema BIOS detectado. Instalando GRUB para BIOS...${RESET}"
+  # Listar discos
+  lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT
+  read -p "Digite o disco de instalação do GRUB (ex: /dev/sda): " GRUB_DISK
+  grub-install --target=i386-pc "$GRUB_DISK"
 fi
+check_command "Instalação do GRUB"
 
-cat <<EOF > /boot/loader/entries/arch.conf
-title   Arch Linux
-linux   /vmlinuz-linux
-initrd  /initramfs-linux.img
-options root=PARTUUID=$PARTUUID rw
-EOF
-check_command "Criar /boot/loader/entries/arch.conf"
-
-cat <<EOF > /boot/loader/loader.conf
-default arch
-timeout 3
-editor no
-EOF
-check_command "Criar /boot/loader/loader.conf"
+grub-mkconfig -o /boot/grub/grub.cfg
+check_command "Gerar configuração do GRUB"
 
 # ------------------------------
 # Instalar drivers AMD
@@ -201,11 +170,11 @@ check_command "Instalação de drivers AMD"
 # ------------------------------
 echo -e "${YELLOW}>> Criando usuário $USERNAME...${RESET}"
 useradd -mG wheel $USERNAME
-check_command "useradd $USERNAME"
+check_command "Criar usuário $USERNAME"
 
 echo -e "${YELLOW}>> Defina a senha do usuário $USERNAME:${RESET}"
 passwd $USERNAME
-check_command "passwd $USERNAME"
+check_command "Definir senha para $USERNAME"
 
 echo "$USERNAME ALL=(ALL) ALL" > /etc/sudoers.d/$USERNAME
 check_command "Permissões sudo para $USERNAME"

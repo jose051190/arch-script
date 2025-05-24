@@ -143,16 +143,7 @@ check_command "Habilitar NetworkManager"
 echo -e "${YELLOW}>> Instalando e configurando GRUB...${RESET}"
 
 # Detectar se o sistema é EFI
-if [ -d /sys/firmware/efi ]; then
-  echo -e "${YELLOW}Sistema EFI detectado. Instalando GRUB para EFI...${RESET}"
-  grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-else
-  echo -e "${YELLOW}Sistema BIOS detectado. Instalando GRUB para BIOS...${RESET}"
-  # Listar discos
-  lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT
-  read -p "Digite o disco de instalação do GRUB (ex: /dev/sda): " GRUB_DISK
-  grub-install --target=i386-pc "$GRUB_DISK"
-fi
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 check_command "Instalação do GRUB"
 
 grub-mkconfig -o /boot/grub/grub.cfg

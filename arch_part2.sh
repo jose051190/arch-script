@@ -172,24 +172,6 @@ PARTUUID=$(blkid -s PARTUUID -o value "$ROOT_PARTITION")
 if [ -z "$PARTUUID" ]; then
   echo "Não foi possível obter o PARTUUID. Verifique se o dispositivo está correto."
   exit 1
-fi# -------------------------------------
-# DEFINIR A PARTIÇÃO RAIZ
-# -------------------------------------
-
-# Listar os discos e partições montadas para ajudar o usuário a identificar a partição raiz
-echo "Partições disponíveis:"
-lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT,UUID,PARTUUID
-
-# Solicitar ao usuário que informe o caminho da partição raiz (ex: /dev/sda2)
-read -p "Digite o caminho da partição raiz (ex: /dev/sda2): " ROOT_PARTITION
-
-# Obter o PARTUUID da partição raiz informada
-PARTUUID=$(blkid -s PARTUUID -o value "$ROOT_PARTITION")
-
-# Verificar se o PARTUUID foi obtido com sucesso
-if [ -z "$PARTUUID" ]; then
-  echo "Não foi possível obter o PARTUUID. Verifique se o dispositivo está correto."
-  exit 1
 fi
 
 cat <<EOF > /boot/loader/entries/arch.conf

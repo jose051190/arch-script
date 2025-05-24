@@ -4,6 +4,7 @@
 
 PACOTES=(
   sway
+  swaybg
   kitty
   dunst
   imv

@@ -59,17 +59,18 @@ msg "Discos disponíveis:"
 mapfile -t discos < <(lsblk -d -o NAME,SIZE,MODEL | grep -vE "loop|sr0|zram" | tail -n +2)
 
 for i in "${!discos[@]}"; do
-    echo "$i) ${discos[$i]}"
+    echo "$((i + 1))) ${discos[$i]}"
 done
 
 read -p "Digite o número do disco para instalar o sistema: " num_disco
 
-if ! [[ "$num_disco" =~ ^[0-9]+$ ]] || [ "$num_disco" -ge "${#discos[@]}" ]; then
+# Ajusta numeração de entrada (1-based para 0-based index)
+if ! [[ "$num_disco" =~ ^[0-9]+$ ]] || [ "$num_disco" -lt 1 ] || [ "$num_disco" -gt "${#discos[@]}" ]; then
     error "Número inválido!"
 fi
 
 # Extrair somente o nome do dispositivo (primeira coluna)
-DISCO_NAME=$(echo "${discos[$num_disco]}" | awk '{print $1}')
+DISCO_NAME=$(echo "${discos[$((num_disco - 1))]}" | awk '{print $1}')
 DISCO="/dev/$DISCO_NAME"
 
 warn "Todos os dados em $DISCO serão apagados!"

@@ -3,6 +3,7 @@
 # Script para instalar ambiente Sway e Hyprland.
 
 PACOTES=(
+  
   sway
   swaybg
   kitty
@@ -10,6 +11,7 @@ PACOTES=(
   imv
   fuzzel
   wofi
+  wf-recorder
   zathura
   zathura-cb
   zathura-pdf-mupdf

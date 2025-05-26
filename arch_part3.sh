@@ -13,7 +13,7 @@ check_command() {
 #-------------------------------------
 # INSTALAÇÃO DE PACOTES ESSENCIAIS
 #-------------------------------------
-PACOTES_ESSENCIAIS=(wl-clipboard npm fwupd fzf syncthing ttf-nerd-fonts-symbols inter-font ttf-jetbrains-mono plymouth neovim rclone fastfetch htop ncdu virt-manager qemu-full ebtables iptables-nft dnsmasq edk2-ovmf spice-vdagent firewalld chromium flatpak zram-generator cryfs pacman-contrib pacutils expac less ksystemlog rsync sshfs go docker docker-compose toolbox cronie)
+PACOTES_ESSENCIAIS=(wl-clipboard ranger npm fwupd fzf ttf-nerd-fonts-symbols inter-font noto-fonts ttf-jetbrains-mono-nerd plymouth neovim rclone fastfetch htop btop ncdu virt-manager qemu-full ebtables dnsmasq edk2-ovmf spice-vdagent firewalld cryfs pacman-contrib pacutils expac less ksystemlog rsync sshfs go docker docker-compose cronie)
 
 sudo pacman -S --needed "${PACOTES_ESSENCIAIS[@]}"
 check_command "Instalação dos pacotes essenciais"
@@ -46,10 +46,6 @@ check_command "Ativação do libvirtd"
 # Ativar e iniciar firewalld
 sudo systemctl enable --now firewalld.service 
 check_command "Ativação do firewalld"
-
-# Ativar e iniciar syncthing para o usuário atual
-sudo systemctl enable --now syncthing@$USER.service 
-check_command "Ativação do syncthing"
 
 # Ativar e iniciar cronie
 sudo systemctl enable --now cronie.service 

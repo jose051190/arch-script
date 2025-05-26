@@ -8,17 +8,18 @@ PACOTES=(
   kitty
   mako
   imv
-  simple-scan
+  fuzzel
+  wofi
   zathura
-  
-  weechat
-  wireplumber
+  zathura-cb
+  zathura-pdf-mupdf
+  zathura-pdf-poppler
+  simplenote
   mpv
   swayidle
   grim
   slurp
   neovim
-  newsboat
   swaylock
   waybar
 )

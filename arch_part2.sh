@@ -13,7 +13,7 @@ ESSENTIAL_PACKAGES=(
   bluez bluez-utils bluez-plugins
   git wget curl dialog
   xdg-utils xdg-user-dirs
-  ntfs-3g mtools dosfstools
+  ntfs-3g mtools dosfstools pavucontrol
   gst-plugins-good
   pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber
   sof-firmware

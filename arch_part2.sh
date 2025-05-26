@@ -18,7 +18,7 @@ ESSENTIAL_PACKAGES=(
   pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber
   sof-firmware
   btrfs-progs
-  grub os-prober efibootmgr zram-generator
+  grub efibootmgr zram-generator
 )
 
 # Pacotes de drivers AMD

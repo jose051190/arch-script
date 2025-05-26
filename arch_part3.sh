@@ -13,7 +13,7 @@ check_command() {
 #-------------------------------------
 # INSTALAÇÃO DE PACOTES ESSENCIAIS
 #-------------------------------------
-PACOTES_ESSENCIAIS=(wl-clipboard yazi rg fd ffmpeg unzip unrar 7zip jq poppler zoxide resvg imagemagick npm fwupd fzf ttf-nerd-fonts-symbols inter-font noto-fonts ttf-jetbrains-mono-nerd plymouth neovim rclone fastfetch htop btop ncdu virt-manager qemu-full ebtables dnsmasq edk2-ovmf spice-vdagent firewalld cryfs pacman-contrib pacutils expac less ksystemlog rsync sshfs go docker docker-compose cronie)
+PACOTES_ESSENCIAIS=(wl-clipboard yazi fd ffmpeg unzip unrar 7zip jq poppler zoxide imagemagick npm fwupd fzf ttf-nerd-fonts-symbols inter-font noto-fonts ttf-jetbrains-mono-nerd plymouth neovim rclone fastfetch htop btop ncdu virt-manager qemu-full ebtables dnsmasq edk2-ovmf spice-vdagent firewalld cryfs pacman-contrib pacutils expac less ksystemlog rsync sshfs go docker docker-compose cronie)
 
 sudo pacman -S --needed "${PACOTES_ESSENCIAIS[@]}"
 check_command "Instalação dos pacotes essenciais"

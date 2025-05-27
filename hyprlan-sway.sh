@@ -3,7 +3,9 @@
 # Script para instalar ambiente Sway e Hyprland.
 
 PACOTES=(
-  
+  hyprland
+  hyprpaper
+  xdg-desktop-portal-hyprland
   sway
   swaybg
   kitty

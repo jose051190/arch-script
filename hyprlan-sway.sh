@@ -9,6 +9,7 @@ PACOTES=(
   nwg-look
   qt5ct
   qt6ct
+  font-manager
   wev
   sway
   swaybg

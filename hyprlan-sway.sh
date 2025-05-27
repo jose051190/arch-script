@@ -9,6 +9,8 @@ PACOTES=(
   nwg-look
   qt5ct
   qt6ct
+  qt5-wayland
+  qt6-wayland
   kvantum
   kvantum-qt5
   font-manager

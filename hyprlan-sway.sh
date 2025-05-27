@@ -6,6 +6,7 @@ PACOTES=(
   hyprland
   hyprpaper
   xdg-desktop-portal-hyprland
+  wev
   sway
   swaybg
   kitty

@@ -6,6 +6,9 @@ PACOTES=(
   hyprland
   hyprpaper
   xdg-desktop-portal-hyprland
+  nwg-look
+  qt5ct
+  qt6ct
   wev
   sway
   swaybg

@@ -25,9 +25,7 @@ PACOTES=(
   wf-recorder
   zathura
   zathura-cb
-  zathura-pdf-mupdf
   zathura-pdf-poppler
-  simplenote
   mpv
   swayidle
   grim

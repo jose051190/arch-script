@@ -12,7 +12,7 @@ BTRFS_OPTS="defaults,noatime,compress=zstd"
 PACOTES_BASE="base linux linux-firmware nano base-devel intel-ucode networkmanager network-manager-applet bash-completion linux-headers"
 
 # Scripts que serão copiados para o chroot
-SCRIPTS=("arch_install_parte2.sh" "arch_install_parte3.sh" "hyprlan-sway.sh")
+SCRIPTS=("arch_install_parte2.sh" "arch_install_parte3.sh" "hyprlan-sway.sh" "fonts.sh")
 
 # Log
 LOG_FILE="install.log"

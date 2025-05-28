@@ -18,6 +18,10 @@ PACOTES=(
   rmpc
   yt-dlp
   ueberzugpp
+  polkit-kde-agent
+  mpd
+  mpc 
+  ncmpcpp
   kvantum
   kvantum-qt5
   font-manager

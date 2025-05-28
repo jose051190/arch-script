@@ -18,7 +18,7 @@ echo "Sistema atualizado."
 echo ""
 
 # --- 2. Instalar Fontes (Pacman) ---
-echo "2. Instalando fontes essenciais e de desenvolvimento..."
+echo "2. Instalando fontes essenciais, de desenvolvimento (Nerd Fonts) e ícones..."
 sudo pacman -S --needed \
     ttf-dejavu \
     ttf-liberation \
@@ -32,22 +32,24 @@ sudo pacman -S --needed \
     ttf-ubuntu-font-family \
     ttf-inter \
     ttf-lato \
-    ttf-jetbrains-mono \
-    ttf-fira-code \
-    ttf-hack \
-    adobe-source-code-pro-fonts |
+    ttf-jetbrains-mono-nerd \
+    ttf-firacode-nerd \
+    ttf-hack-nerd \
+    adobe-source-code-pro-fonts \
+    ttf-font-awesome |
 | { echo "Erro ao instalar fontes via pacman. Saindo."; exit 1; }
-echo "Fontes de sistema e desenvolvimento instaladas."
+echo "Fontes de sistema, desenvolvimento e ícones instaladas."
 echo ""
 
-# --- 3. Instalar Fontes Microsoft (AUR com yay) ---
-echo "3. Instalando fontes Microsoft via AUR (aceite o EULA quando solicitado)..."
+# --- 3. Instalar Fontes Microsoft e Nerd Fonts adicionais (AUR com yay) ---
+echo "3. Instalando fontes Microsoft e Nerd Fonts adicionais via AUR (aceite o EULA quando solicitado)..."
 yay -S --needed \
     ttf-ms-fonts \
     ttf-office-2007-fonts \
-    ttf-ms-win11-auto |
-| { echo "Erro ao instalar fontes Microsoft. Verifique o EULA e as dependências."; }
-echo "Fontes Microsoft instaladas (se o EULA foi aceito)."
+    ttf-ms-win11-auto \
+    ttf-inconsolata-nerd |
+| { echo "Erro ao instalar fontes Microsoft/Nerd Fonts adicionais. Verifique o EULA e as dependências."; }
+echo "Fontes Microsoft e Nerd Fonts adicionais instaladas (se o EULA foi aceito)."
 echo ""
 
 # --- 4. Configurar Fontconfig Presets ---
@@ -93,6 +95,10 @@ cat << EOF > "$FONTCONFIG_USER_CONF"
     <alias>
         <family>monospace</family>
         <prefer>
+            <family>JetBrainsMono Nerd Font</family>
+            <family>FiraCode Nerd Font</family>
+            <family>Hack Nerd Font</family>
+            <family>Inconsolata Nerd Font</family>
             <family>Noto Sans Mono</family>
             <family>Noto Color Emoji</family>
             <family>Noto Emoji</family>

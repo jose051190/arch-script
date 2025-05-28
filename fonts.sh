@@ -18,14 +18,14 @@ FREETYPE_CONF="/etc/profile.d/freetype2.sh"
 # --- 1. Atualizar Sistema ---
 echo "1. Atualizando sistema..."
 # É crucial realizar uma atualização completa do sistema para evitar problemas de dependência. [1, 2, 3]
-sudo pacman -Syu --needed |
+sudo pacman -Syu |
 | { echo "Erro ao atualizar o sistema. Saindo."; exit 1; }
 echo "Sistema atualizado."
 echo ""
 
 # --- 2. Instalar Fontes (Pacman) ---
 echo "2. Instalando fontes essenciais, de desenvolvimento (Nerd Fonts) e ícones..."
-# Usando --needed para garantir idempotência: pacotes já instalados não serão reinstalados. [1]
+# Usando --needed para garantir idempotência: pacotes já instalados não serão reinstalados. [1, 2, 4]
 sudo pacman -S --needed \
     ttf-dejavu \
     ttf-liberation \
@@ -51,14 +51,14 @@ echo ""
 # --- 3. Instalar Fontes Microsoft e Nerd Fonts adicionais (AUR com yay) ---
 echo "3. Instalando fontes Microsoft e Nerd Fonts adicionais via AUR."
 echo "ATENÇÃO: A instalação de 'ttf-ms-fonts' requer a aceitação do EULA da Microsoft."
-echo "Este EULA impõe restrições de uso e redistribuição (e.g., não para fins lucrativos ou modificação). [4, 5]"
+echo "Este EULA impõe restrições de uso e redistribuição (e.g., não para fins lucrativos ou modificação). [5, 6]"
 echo "Certifique-se de ler e compreender o EULA antes de prosseguir. "
 read -p "Pressione Enter para continuar e aceitar o EULA (se solicitado pelo yay)..."
 
-echo "ATENÇÃO: Ao instalar pacotes do AUR, é altamente recomendável revisar o PKGBUILD para garantir a segurança. [3, 6]"
+echo "ATENÇÃO: Ao instalar pacotes do AUR, é altamente recomendável revisar o PKGBUILD para garantir a segurança. [3, 7]"
 read -p "Pressione Enter para iniciar a instalação via yay..."
 
-# Usando --needed para garantir idempotência. [6]
+# Usando --needed para garantir idempotência. [7]
 # O tratamento de erro aqui não sai do script, permitindo que continue mesmo se o AUR falhar.
 yay -S --needed \
     ttf-ms-fonts \
@@ -71,7 +71,7 @@ echo ""
 
 # --- 4. Configurar Fontconfig Presets ---
 echo "4. Habilitando presets do Fontconfig..."
-# Criando links simbólicos para presets globais. [7]
+# Criando links simbólicos para presets globais. [8]
 sudo ln -sf /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d/ |
 | { echo "Erro ao linkar 70-no-bitmaps.conf."; }
 sudo ln -sf /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d/ |
@@ -83,7 +83,7 @@ echo ""
 
 # --- 5. Criar/Editar ~/.config/fontconfig/fonts.conf ---
 echo "5. Criando/Atualizando $FONTCONFIG_USER_CONF..."
-# Configurações de fontes específicas do usuário têm precedência sobre as globais. [7, 8]
+# Configurações de fontes específicas do usuário têm precedência sobre as globais. [8, 9]
 mkdir -p "$FONTCONFIG_USER_DIR"
 cat << EOF > "$FONTCONFIG_USER_CONF"
 <?xml version="1.0"?>
@@ -130,7 +130,7 @@ echo ""
 
 # --- 6. Configurar FreeType ---
 echo "6. Configurando FreeType..."
-# A versão 40 do interpretador TrueType é o padrão no FreeType 2.7+ e oferece bom equilíbrio entre velocidade e qualidade. [7, 9, 10]
+# A versão 40 do interpretador TrueType é o padrão no FreeType 2.7+ e oferece bom equilíbrio entre velocidade e qualidade. [4, 8, 10, 11]
 if grep -q "^#export FREETYPE_PROPERTIES=\"truetype:interpreter-version=40\"" "$FREETYPE_CONF"; then
     sudo sed -i 's/^#export FREETYPE_PROPERTIES="truetype:interpreter-version=40"/export FREETYPE_PROPERTIES="truetype:interpreter-version=40"/' "$FREETYPE_CONF"
     echo "Configuração do FreeType atualizada (descomentada)."
@@ -144,7 +144,7 @@ echo ""
 
 # --- 7. Atualizar Cache de Fontes ---
 echo "7. Atualizando cache de fontes..."
-# É crucial executar fc-cache -fv como root para atualizar a cache global de fontes. [11, 12, 13]
+# É crucial executar fc-cache -fv como root para atualizar a cache global de fontes. [4, 8, 12, 13]
 sudo fc-cache -fv |
 | { echo "Erro ao atualizar o cache de fontes. Saindo."; exit 1; }
 echo "Cache de fontes atualizado."
@@ -159,6 +159,6 @@ echo "  - Fazer logout e login na sua sessão (Hyprland)."
 echo "  - Reiniciar o sistema para garantir todas as configurações."
 echo ""
 echo "Recomendações adicionais para manutenção do sistema:"
-echo "  - Verifique regularmente por ficheiros '.pacnew' em /etc (use 'pacdiff') para mesclar novas configurações de pacotes. [1]"
-echo "  - Remova pacotes órfãos (pacotes instalados como dependências que não são mais necessários) com 'pacman -Qdt' e 'yay -Qdt'. [1, 6]"
+echo "  - Verifique regularmente por ficheiros '.pacnew' em /etc (use 'pacdiff') para mesclar novas configurações de pacotes. [1, 2, 4]"
+echo "  - Remova pacotes órfãos (pacotes instalados como dependências que não são mais necessários) com 'pacman -Qdt' e 'yay -Qdt'. [1, 2, 7, 4]"
 echo "----------------------------------------------------"

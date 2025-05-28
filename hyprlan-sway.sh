@@ -14,6 +14,10 @@ PACOTES=(
   qt5-graphicaleffects
   sddm
   sddm-kcm
+  rofi-wayland
+  rmpc
+  yt-dlp
+  ueberzugpp
   kvantum
   kvantum-qt5
   font-manager

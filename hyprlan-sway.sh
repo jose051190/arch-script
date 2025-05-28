@@ -11,6 +11,9 @@ PACOTES=(
   qt6ct
   qt5-wayland
   qt6-wayland
+  qt5-graphicaleffects
+  sddm
+  sddm-kcm
   kvantum
   kvantum-qt5
   font-manager

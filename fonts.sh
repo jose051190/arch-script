@@ -39,7 +39,8 @@ sudo pacman -S --needed \
 echo "Instalando Nerd Fonts..."
 yay -S --needed \
   ttf-fira-code-nerd \
-  ttf-hack-nerd
+  ttf-hack-nerd \
+  ttf-meslo-nerd
 
 # =============================================================================
 # Instalação de fontes da Microsoft

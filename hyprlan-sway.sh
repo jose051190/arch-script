@@ -18,10 +18,17 @@ PACOTES=(
   rmpc
   yt-dlp
   ueberzugpp
-  polkit-kde-agent
   mpd
   mpc 
-  ncmpcpp
+  leafpad
+  tumbler 
+  thunar
+  timidity++
+  file-roller
+  polkit-gnome
+  thunar-media-tags-plugin 
+  thunar-shares-plugin 
+  thunar-media-tags-plugin 
   kvantum
   kvantum-qt5
   font-manager

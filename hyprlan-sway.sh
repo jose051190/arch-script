@@ -19,6 +19,8 @@ PACOTES=(
   rmpc
   yt-dlp
   ueberzugpp
+  eza
+  bat
   mpd
   mpc 
   leafpad

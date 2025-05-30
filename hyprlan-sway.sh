@@ -15,6 +15,7 @@ PACOTES=(
   sddm
   sddm-kcm
   rofi-wayland
+  gnome-calculator
   rmpc
   yt-dlp
   ueberzugpp
@@ -38,8 +39,6 @@ PACOTES=(
   kitty
   mako
   imv
-  fuzzel
-  wofi
   wf-recorder
   zathura
   zathura-cb
